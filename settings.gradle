@@ -1,0 +1,2 @@
+include ':webpsample'
+include ':webp_decoder'

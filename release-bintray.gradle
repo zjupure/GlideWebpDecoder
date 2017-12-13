@@ -1,0 +1,35 @@
+apply plugin: 'com.android.library'
+
+// Set up everything required for releasing on Bintray
+ext {
+    bintrayRepo = 'maven-home'
+    //bintrayUserOrg = 'individual'
+    bintrayName = "${GROUP}:${POM_ARTIFACT_ID}"
+    bintrayDescription = POM_DESCRIPTION
+    projectUrl = 'https://github.com/zjupure/GlideWebpDecoder'
+    issuesUrl = 'https://github.com/zjupure/GlideWebpDecoder'
+    scmUrl = 'https://github.com/zjupure/GlideWebpDecoder'
+    scmConnection = 'scm:git:https://github.com/zjupure/GlideWebpDecoder.git'
+    scmDeveloperConnection = 'scm:git:git@github.com:zjupure/GlideWebpDecoder.git'
+
+    publishedGroupId = GROUP
+    libraryName = 'glide-webpdecoder'
+    artifact = 'webpdecoder'
+
+    projectLicenses = {
+        license {
+            name 'BSD License'
+            url 'https://raw.githubusercontent.com/zjupure/GlideWebpDecoder/add-license-1/LICENSE'
+            distribution 'repo'
+        }
+    }
+}
+
+// Set up the Android Maven publication (POM etc.)
+apply from: rootProject.file('scripts/android-maven-install.gradle')
+
+// Upload to Bintray
+apply from: rootProject.file('scripts/bintray.gradle')
+
+// Android tasks
+apply from: rootProject.file('scripts/android-tasks.gradle')
