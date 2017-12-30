@@ -1,6 +1,11 @@
 # GlideWebpDecoder
 
-GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decode and show animated webp images. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
+GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decode and show webp images on Android Platform. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
+
+## Features
+
+* play animated wepb images on all Android Platforms
+* show transparent or lossless webp images on lower 4.2.1 Android (4.2+ System BitmapFactory support webp decode so we have no need to handle)
 
 ## Dependency Integration
 
@@ -14,7 +19,7 @@ compile 'com.github.bumptech.glide:glide:4.2.0'
 annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
 ```
 
-Then you are free to use GlideWebpDecoder just like use Glide library.
+Then you are free to use GlideWebpDecoder just like use other Glide integration library.
 
 ## Proguard
 

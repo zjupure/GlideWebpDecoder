@@ -27,8 +27,8 @@ import java.nio.ByteBuffer;
  */
 public class WebpDecoder implements GifDecoder {
     private static final String TAG = "WebpDecoder";
-    // 缓存最近的10帧Bitmap用于渲染当前帧
-    private static final int MAX_FRAME_BITMAP_SIZE = 10;
+    // 缓存最近的Bitmap帧用于渲染当前帧
+    private static final int MAX_FRAME_BITMAP_SIZE = 5;
 
     /** Raw WebP data from input source. */
     private ByteBuffer rawData;

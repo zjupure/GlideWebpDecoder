@@ -35,13 +35,9 @@ public class WebpGlideLibraryModule extends LibraryGlideModule {
 
         ByteBufferWebpDecoder byteBufferWebpDecoder =
                 new ByteBufferWebpDecoder(context, glide.getArrayPool(), glide.getBitmapPool());
-        // 需要插入到数组的最前面
-        // 动态webp
-        registry.prepend(ByteBuffer.class, WebpDrawable.class, byteBufferWebpDecoder);
-        registry.prepend(InputStream.class, WebpDrawable.class, new StreamWebpDecoder(byteBufferWebpDecoder, glide.getArrayPool()));
-        registry.prepend(WebpDrawable.class, new WebpDrawableEncoder());
-
-        // 静态无损/透明webp，Android 4.2.1以下
+        // We should put our decoder before the build-in decoders,
+        // because the Downsampler will consumer arbitrary data and make the inputstream corrupt
+        // on some devices
         final Resources resources = context.getResources();
         final BitmapPool bitmapPool = glide.getBitmapPool();
         final ArrayPool arrayPool = glide.getArrayPool();
@@ -52,10 +48,10 @@ public class WebpGlideLibraryModule extends LibraryGlideModule {
         ByteBufferBitmapDecoder byteBufferBitmapDecoder = new ByteBufferBitmapWebpDecoder(webpDownsampler);
         StreamBitmapDecoder streamBitmapDecoder = new StreamBitmapWebpDecoder(webpDownsampler, arrayPool);
         registry
-                /* Bitmaps for Static Webps */
+                /* Bitmaps for static webp images */
                 .prepend(Registry.BUCKET_BITMAP, ByteBuffer.class, Bitmap.class, byteBufferBitmapDecoder)
                 .prepend(Registry.BUCKET_BITMAP, InputStream.class, Bitmap.class, streamBitmapDecoder)
-                /* BitmapDrawables for Static Webps */
+                /* BitmapDrawables for static webp images */
                 .prepend(
                         Registry.BUCKET_BITMAP_DRAWABLE,
                         ByteBuffer.class,
@@ -65,6 +61,10 @@ public class WebpGlideLibraryModule extends LibraryGlideModule {
                         Registry.BUCKET_BITMAP_DRAWABLE,
                         InputStream.class,
                         BitmapDrawable.class,
-                        new BitmapDrawableDecoder<>(resources, bitmapPool, streamBitmapDecoder));
+                        new BitmapDrawableDecoder<>(resources, bitmapPool, streamBitmapDecoder))
+                /* Animated webp imaged */
+                .prepend(ByteBuffer.class, WebpDrawable.class, byteBufferWebpDecoder)
+                .prepend(InputStream.class, WebpDrawable.class, new StreamWebpDecoder(byteBufferWebpDecoder, arrayPool))
+                .prepend(WebpDrawable.class, new WebpDrawableEncoder());
     }
 }
