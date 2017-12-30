@@ -33,3 +33,13 @@ apply from: rootProject.file('scripts/bintray.gradle')
 
 // Android tasks
 apply from: rootProject.file('scripts/android-tasks.gradle')
+
+
+afterEvaluate {
+    Task upload = project.tasks.getByName("bintrayUpload")
+    Task build = project.tasks.getByName("build")
+    Task install = project.tasks.getByName("install")
+
+    upload.dependsOn(install)
+    upload.dependsOn(build)
+}

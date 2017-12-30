@@ -1,19 +1,19 @@
 # GlideWebpDecoder
 
-GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decode and show webp images on Android Platform. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
+GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decode and show webp images on Android platform. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
 
 ## Features
 
-* play animated wepb images on all Android Platforms
-* show transparent or lossless webp images on lower 4.2.1 Android (4.2+ System BitmapFactory support webp decode so we have no need to handle)
+* play animated wepb images on all Android versions
+* show transparent or lossless webp images on Android devices lower than 4.2.1 (BitmapFactory support webp decode on 4.2+ system so we have no need to handle)
 
 ## Dependency Integration
 
-Library is availble in jcenter. If you are build with Gradle, simple add the following dependencies to your `build.gradle` file
+Library is availble in jcenter. If you are build with Gradle, just add the following dependencies to your `build.gradle` file
 
 ```gradle
 // webpdecoder
-compile 'com.zlc.glide:webpdecoder:0.0.1'
+compile 'com.zlc.glide:webpdecoder:0.0.2'
 // glide 
 compile 'com.github.bumptech.glide:glide:4.2.0'
 annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
@@ -33,7 +33,7 @@ The library use native code to decode webp, so you should put the following line
 
 ## Acknowledgement
 
-* [libwebp project](https://github.com/webmproject/libwebp)
+* [libwebp](https://github.com/webmproject/libwebp)
 * [Fresco](https://github.com/facebook/fresco)
 * [GlideWebpSupport](https://github.com/roths/GlideWebpSupport)
 
