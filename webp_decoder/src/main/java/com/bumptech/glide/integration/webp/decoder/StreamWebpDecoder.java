@@ -36,8 +36,6 @@ public class StreamWebpDecoder implements ResourceDecoder<InputStream, WebpDrawa
     @Override
     public boolean handles(InputStream inputStream, Options options) throws IOException {
 
-//        ImageHeaderParser.ImageType imageType = ImageHeaderParserUtils.getType(mParsers, inputStream, mByteArrayPool);
-//        return imageType == ImageHeaderParser.ImageType.WEBP || imageType == ImageHeaderParser.ImageType.WEBP_A;
         WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(inputStream, byteArrayPool);
         return WebpHeaderParser.isAnimatedWebpType(webpType);
     }
