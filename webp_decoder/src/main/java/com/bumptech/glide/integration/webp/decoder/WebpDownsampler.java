@@ -13,6 +13,7 @@ import com.bumptech.glide.integration.webp.WebpHeaderParser;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.ImageHeaderParser;
 import com.bumptech.glide.load.ImageHeaderParserUtils;
+import com.bumptech.glide.load.Option;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool;
@@ -43,7 +44,11 @@ import static com.bumptech.glide.load.resource.bitmap.Downsampler.ALLOW_HARDWARE
  * @author liuchun
  */
 public class WebpDownsampler {
-    private static final String TAG = "Downsampler";
+    private static final String TAG = "WebpDownsampler";
+
+    public static final Option<Boolean> DISABLE_DECODER = Option.memory(
+            "com.bumptech.glide.integration.webp.decoder.WebpDownsampler.DisableDecoder", false);
+
 
     private static final Downsampler.DecodeCallbacks EMPTY_CALLBACKS = new Downsampler.DecodeCallbacks() {
         @Override
@@ -83,8 +88,9 @@ public class WebpDownsampler {
         this.downsampler = downsampler;
     }
 
-    public boolean handles(InputStream is) throws IOException{
-        if (WebpHeaderParser.sIsExtendedWebpSupported) {
+    public boolean handles(InputStream is, Options options) throws IOException{
+        if (options.get(DISABLE_DECODER)
+            || WebpHeaderParser.sIsExtendedWebpSupported) {
             // Android System support decode this webp, just to next decoder
             return false;
         }
@@ -96,8 +102,9 @@ public class WebpDownsampler {
                 && downsampler.handles(is);
     }
 
-    public boolean handles(ByteBuffer byteBuffer) throws IOException{
-        if (WebpHeaderParser.sIsExtendedWebpSupported) {
+    public boolean handles(ByteBuffer byteBuffer, Options options) throws IOException{
+        if (options.get(DISABLE_DECODER)
+            || WebpHeaderParser.sIsExtendedWebpSupported) {
             // Android System support decode this webp, just to next decoder
             return false;
         }

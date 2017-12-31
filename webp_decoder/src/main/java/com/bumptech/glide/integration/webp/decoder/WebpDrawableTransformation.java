@@ -18,8 +18,7 @@ import java.security.MessageDigest;
  * {@link com.bumptech.glide.integration.webp.decoder.WebpDrawable}.
  * warning: 该功能还不稳定
  *
- * author: liuchun
- * date: 2017/10/31
+ * @author liuchun
  */
 public class WebpDrawableTransformation implements Transformation<WebpDrawable> {
     private final Transformation<Bitmap> wrapped;

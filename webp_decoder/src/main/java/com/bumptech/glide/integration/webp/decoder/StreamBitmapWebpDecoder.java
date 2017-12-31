@@ -26,7 +26,7 @@ public class StreamBitmapWebpDecoder extends StreamBitmapDecoder {
 
     @Override
     public boolean handles(InputStream source, Options options) throws IOException {
-        return downsampler.handles(source);
+        return downsampler.handles(source, options);
     }
 
     @Override

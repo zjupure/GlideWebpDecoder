@@ -28,8 +28,8 @@ import java.util.UUID;
 
 
 /**
- * author: liuchun
- * date:  2017/10/21
+ *
+ * @author liuchun
  */
 public class WebpFrameLoader {
 

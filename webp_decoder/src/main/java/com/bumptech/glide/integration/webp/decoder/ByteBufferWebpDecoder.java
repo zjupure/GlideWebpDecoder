@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Option;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.Transformation;
@@ -24,11 +25,13 @@ import java.nio.ByteBuffer;
  * An {@link com.bumptech.glide.load.ResourceDecoder} that decodes {@link
  *  com.bumptech.glide.integration.webp.decoder.WebpDrawable} from {@link java.nio.ByteBuffer} data
  *
- * author: liuchun
- * date:  2017/10/24
+ * @author liuchun
  */
 public class ByteBufferWebpDecoder implements ResourceDecoder<ByteBuffer, WebpDrawable> {
     private static final String TAG = "BufferWebpDecoder";
+
+    public static final Option<Boolean> DISABLE_ANIMATION = Option.memory(
+            "com.bumptech.glide.integration.webp.decoder.ByteBufferWebpDecoder.DisableAnimation", false);
 
     private final Context mContext;
     private final BitmapPool mBitmapPool;
@@ -48,6 +51,9 @@ public class ByteBufferWebpDecoder implements ResourceDecoder<ByteBuffer, WebpDr
 
     @Override
     public boolean handles(ByteBuffer source, Options options) throws IOException {
+        if (options.get(DISABLE_ANIMATION)) {
+            return false;
+        }
 
         WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(source);
         return WebpHeaderParser.isAnimatedWebpType(webpType);

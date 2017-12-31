@@ -26,7 +26,7 @@ public class ByteBufferBitmapWebpDecoder extends ByteBufferBitmapDecoder {
 
     @Override
     public boolean handles(ByteBuffer source, Options options) throws IOException {
-        return downsampler.handles(source);
+        return downsampler.handles(source, options);
     }
 
     @Override

@@ -15,8 +15,7 @@ import java.io.IOException;
  * Writes the original bytes of a {@link com.bumptech.glide.integration.webp.decoder.WebpDrawable} to an
  * {@link java.io.OutputStream}.
  *
- * author: liuchun
- * date: 2017/10/31
+ * @author liuchun
  */
 public class WebpDrawableEncoder implements ResourceEncoder<WebpDrawable> {
     private static final String TAG = "WebpEncoder";

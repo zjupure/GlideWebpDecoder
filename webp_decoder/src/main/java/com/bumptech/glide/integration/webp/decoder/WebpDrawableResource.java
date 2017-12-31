@@ -4,8 +4,7 @@ import com.bumptech.glide.load.engine.Initializable;
 import com.bumptech.glide.load.resource.drawable.DrawableResource;
 
 /**
- * author: liuchun
- * date:  2017/10/24
+ * @author liuchun
  */
 public class WebpDrawableResource extends DrawableResource<WebpDrawable> implements Initializable {
 

@@ -3,6 +3,7 @@ package com.bumptech.glide.integration.webp.decoder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.bumptech.glide.load.Option;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.engine.Resource;
@@ -24,6 +25,10 @@ public class StreamWebpDecoder implements ResourceDecoder<InputStream, WebpDrawa
 
     private final static String TAG = "StreamWebpDecoder";
 
+    public static final Option<Boolean> DISABLE_ANIMATION = Option.memory(
+            "com.bumptech.glide.integration.webp.decoder.StreamWebpDecoder.DisableAnimation", false);
+
+
     private final ResourceDecoder<ByteBuffer, WebpDrawable> byteBufferDecoder;
     private final ArrayPool byteArrayPool;
 
@@ -35,6 +40,9 @@ public class StreamWebpDecoder implements ResourceDecoder<InputStream, WebpDrawa
 
     @Override
     public boolean handles(InputStream inputStream, Options options) throws IOException {
+        if (options.get(DISABLE_ANIMATION)) {
+            return false;
+        }
 
         WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(inputStream, byteArrayPool);
         return WebpHeaderParser.isAnimatedWebpType(webpType);
