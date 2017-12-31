@@ -1,15 +1,15 @@
 # GlideWebpDecoder
 
-GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decode and show webp images on Android platform. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
+GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decoding and displaying webp images on Android platforms. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
 
 ## Features
 
-* play animated wepb images on all Android versions
-* show transparent or lossless webp images on Android devices lower than 4.2.1 (BitmapFactory support webp decode on 4.2+ system so we have no need to handle)
+* play animated webp images on all Android versions
+* show transparent or lossless webp images on Android devices lower than 4.2.1 (BitmapFactory support webp decode on 4.2+ android system so we have no need to handle)
 
 ## Dependency Integration
 
-Library is availble in jcenter. If you are build with Gradle, just add the following dependencies to your `build.gradle` file
+Library is available in jcenter. If you are build with Gradle, just add the following dependencies to your `build.gradle` file
 
 ```gradle
 // webpdecoder
@@ -23,7 +23,7 @@ Then you are free to use GlideWebpDecoder just like use other Glide integration 
 
 ## Proguard
 
-The library use native code to decode webp, so you should put the following lines to your proguard.cfg and keep the jni interface.
+The library use native code to decode webp, so you should put the following lines to your `proguard.cfg` and keep the jni interface.
 
 ```pro
 -keep public class com.bumptech.glide.integration.webp.WebpImage { *; }

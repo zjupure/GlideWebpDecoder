@@ -43,7 +43,7 @@ import static com.bumptech.glide.load.resource.bitmap.Downsampler.ALLOW_HARDWARE
  *
  * @author liuchun
  */
-public class WebpDownsampler {
+public final class WebpDownsampler {
     private static final String TAG = "WebpDownsampler";
 
     public static final Option<Boolean> DISABLE_DECODER = Option.memory(
