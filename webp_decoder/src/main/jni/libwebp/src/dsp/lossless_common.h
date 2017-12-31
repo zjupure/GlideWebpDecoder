@@ -16,9 +16,9 @@
 #ifndef WEBP_DSP_LOSSLESS_COMMON_H_
 #define WEBP_DSP_LOSSLESS_COMMON_H_
 
-#include "../webp/types.h"
+#include "src/webp/types.h"
 
-#include "../utils/utils.h"
+#include "src/utils/utils.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -92,14 +92,6 @@ static WEBP_INLINE float VP8LFastSLog2(uint32_t v) {
 
 // -----------------------------------------------------------------------------
 // PrefixEncode()
-
-static WEBP_INLINE int VP8LBitsLog2Ceiling(uint32_t n) {
-  const int log_floor = BitsLog2Floor(n);
-  if (n == (n & ~(n - 1))) {  // zero or a power of two.
-    return log_floor;
-  }
-  return log_floor + 1;
-}
 
 // Splitting of distance and length codes into prefixes and
 // extra bits. The prefixes are encoded with an entropy code

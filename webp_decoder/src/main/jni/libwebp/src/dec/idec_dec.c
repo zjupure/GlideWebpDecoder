@@ -15,10 +15,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "./alphai_dec.h"
-#include "./webpi_dec.h"
-#include "./vp8i_dec.h"
-#include "../utils/utils.h"
+#include "src/dec/alphai_dec.h"
+#include "src/dec/webpi_dec.h"
+#include "src/dec/vp8i_dec.h"
+#include "src/utils/utils.h"
 
 // In append mode, buffer allocations increase as multiples of this value.
 // Needs to be a power of 2.
@@ -673,12 +673,12 @@ void WebPIDelete(WebPIDecoder* idec) {
 //------------------------------------------------------------------------------
 // Wrapper toward WebPINewDecoder
 
-WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE mode, uint8_t* output_buffer,
+WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE csp, uint8_t* output_buffer,
                           size_t output_buffer_size, int output_stride) {
   const int is_external_memory = (output_buffer != NULL) ? 1 : 0;
   WebPIDecoder* idec;
 
-  if (mode >= MODE_YUV) return NULL;
+  if (csp >= MODE_YUV) return NULL;
   if (is_external_memory == 0) {    // Overwrite parameters to sane values.
     output_buffer_size = 0;
     output_stride = 0;
@@ -689,7 +689,7 @@ WebPIDecoder* WebPINewRGB(WEBP_CSP_MODE mode, uint8_t* output_buffer,
   }
   idec = WebPINewDecoder(NULL);
   if (idec == NULL) return NULL;
-  idec->output_.colorspace = mode;
+  idec->output_.colorspace = csp;
   idec->output_.is_external_memory = is_external_memory;
   idec->output_.u.RGBA.rgba = output_buffer;
   idec->output_.u.RGBA.stride = output_stride;

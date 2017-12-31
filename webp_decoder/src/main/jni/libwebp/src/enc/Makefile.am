@@ -1,8 +1,10 @@
+AM_CPPFLAGS += -I$(top_builddir) -I$(top_srcdir)
 noinst_LTLIBRARIES = libwebpencode.la
 
 libwebpencode_la_SOURCES =
 libwebpencode_la_SOURCES += alpha_enc.c
 libwebpencode_la_SOURCES += analysis_enc.c
+libwebpencode_la_SOURCES += backward_references_cost_enc.c
 libwebpencode_la_SOURCES += backward_references_enc.c
 libwebpencode_la_SOURCES += backward_references_enc.h
 libwebpencode_la_SOURCES += config_enc.c

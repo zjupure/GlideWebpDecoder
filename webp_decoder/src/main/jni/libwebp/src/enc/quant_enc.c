@@ -15,8 +15,8 @@
 #include <math.h>
 #include <stdlib.h>  // for abs()
 
-#include "./vp8i_enc.h"
-#include "./cost_enc.h"
+#include "src/enc/vp8i_enc.h"
+#include "src/enc/cost_enc.h"
 
 #define DO_TRELLIS_I4  1
 #define DO_TRELLIS_I16 1   // not a huge gain, but ok at low bitrate.
@@ -457,11 +457,11 @@ void VP8SetSegmentParams(VP8Encoder* const enc, float quality) {
 // Form the predictions in cache
 
 // Must be ordered using {DC_PRED, TM_PRED, V_PRED, H_PRED} as index
-const int VP8I16ModeOffsets[4] = { I16DC16, I16TM16, I16VE16, I16HE16 };
-const int VP8UVModeOffsets[4] = { C8DC8, C8TM8, C8VE8, C8HE8 };
+const uint16_t VP8I16ModeOffsets[4] = { I16DC16, I16TM16, I16VE16, I16HE16 };
+const uint16_t VP8UVModeOffsets[4] = { C8DC8, C8TM8, C8VE8, C8HE8 };
 
 // Must be indexed using {B_DC_PRED -> B_HU_PRED} as index
-const int VP8I4ModeOffsets[NUM_BMODES] = {
+const uint16_t VP8I4ModeOffsets[NUM_BMODES] = {
   I4DC4, I4TM4, I4VE4, I4HE4, I4RD4, I4VR4, I4LD4, I4VL4, I4HD4, I4HU4
 };
 
@@ -492,14 +492,14 @@ void VP8MakeIntra4Preds(const VP8EncIterator* const it) {
 // |YYYY|....| 12
 // +----+----+
 
-const int VP8Scan[16] = {  // Luma
+const uint16_t VP8Scan[16] = {  // Luma
   0 +  0 * BPS,  4 +  0 * BPS, 8 +  0 * BPS, 12 +  0 * BPS,
   0 +  4 * BPS,  4 +  4 * BPS, 8 +  4 * BPS, 12 +  4 * BPS,
   0 +  8 * BPS,  4 +  8 * BPS, 8 +  8 * BPS, 12 +  8 * BPS,
   0 + 12 * BPS,  4 + 12 * BPS, 8 + 12 * BPS, 12 + 12 * BPS,
 };
 
-static const int VP8ScanUV[4 + 4] = {
+static const uint16_t VP8ScanUV[4 + 4] = {
   0 + 0 * BPS,   4 + 0 * BPS, 0 + 4 * BPS,  4 + 4 * BPS,    // U
   8 + 0 * BPS,  12 + 0 * BPS, 8 + 4 * BPS, 12 + 4 * BPS     // V
 };
@@ -1162,7 +1162,7 @@ static void RefineUsingDistortion(VP8EncIterator* const it,
     const uint8_t* const src = it->yuv_in_ + Y_OFF_ENC;
     for (mode = 0; mode < NUM_PRED_MODES; ++mode) {
       const uint8_t* const ref = it->yuv_p_ + VP8I16ModeOffsets[mode];
-      const score_t score = VP8SSE16x16(src, ref) * RD_DISTO_MULT
+      const score_t score = (score_t)VP8SSE16x16(src, ref) * RD_DISTO_MULT
                           + VP8FixedCostsI16[mode] * lambda_d_i16;
       if (mode > 0 && VP8FixedCostsI16[mode] > bit_limit) {
         continue;

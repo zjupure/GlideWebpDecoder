@@ -16,10 +16,10 @@
 #include <string.h>
 #include <math.h>
 
-#include "./cost_enc.h"
-#include "./vp8i_enc.h"
-#include "./vp8li_enc.h"
-#include "../utils/utils.h"
+#include "src/enc/cost_enc.h"
+#include "src/enc/vp8i_enc.h"
+#include "src/enc/vp8li_enc.h"
+#include "src/utils/utils.h"
 
 // #define PRINT_MEMORY_INFO
 
@@ -207,7 +207,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
   enc->preds_w_ = preds_w;
   enc->mb_info_ = (VP8MBInfo*)mem;
   mem += info_size;
-  enc->preds_ = ((uint8_t*)mem) + 1 + enc->preds_w_;
+  enc->preds_ = mem + 1 + enc->preds_w_;
   mem += preds_size;
   enc->nz_ = 1 + (uint32_t*)WEBP_ALIGN(mem);
   mem += nz_size;
@@ -216,7 +216,7 @@ static VP8Encoder* InitVP8Encoder(const WebPConfig* const config,
 
   // top samples (all 16-aligned)
   mem = (uint8_t*)WEBP_ALIGN(mem);
-  enc->y_top_ = (uint8_t*)mem;
+  enc->y_top_ = mem;
   enc->uv_top_ = enc->y_top_ + top_stride;
   mem += 2 * top_stride;
   assert(mem <= (uint8_t*)enc + size);
@@ -256,6 +256,7 @@ static int DeleteVP8Encoder(VP8Encoder* enc) {
 
 //------------------------------------------------------------------------------
 
+#if !defined(WEBP_DISABLE_STATS)
 static double GetPSNR(uint64_t err, uint64_t size) {
   return (err > 0 && size > 0) ? 10. * log10(255. * 255. * size / err) : 99.;
 }
@@ -270,8 +271,10 @@ static void FinalizePSNR(const VP8Encoder* const enc) {
   stats->PSNR[3] = (float)GetPSNR(sse[0] + sse[1] + sse[2], size * 3 / 2);
   stats->PSNR[4] = (float)GetPSNR(sse[3], size);
 }
+#endif  // !defined(WEBP_DISABLE_STATS)
 
 static void StoreStats(VP8Encoder* const enc) {
+#if !defined(WEBP_DISABLE_STATS)
   WebPAuxStats* const stats = enc->pic_->stats;
   if (stats != NULL) {
     int i, s;
@@ -288,7 +291,9 @@ static void StoreStats(VP8Encoder* const enc) {
       stats->block_count[i] = enc->block_count_[i];
     }
   }
+#else  // defined(WEBP_DISABLE_STATS)
   WebPReportProgress(enc->pic_, 100, &enc->percent_);  // done!
+#endif  // !defined(WEBP_DISABLE_STATS)
 }
 
 int WebPEncodingSetError(const WebPPicture* const pic,
@@ -336,10 +341,6 @@ int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
   if (!config->lossless) {
     VP8Encoder* enc = NULL;
 
-    if (!config->exact) {
-      WebPCleanupTransparentArea(pic);
-    }
-
     if (pic->use_argb || pic->y == NULL || pic->u == NULL || pic->v == NULL) {
       // Make sure we have YUVA samples.
       if (config->use_sharp_yuv || (config->preprocessing & 4)) {
@@ -359,6 +360,10 @@ int WebPEncode(const WebPConfig* config, WebPPicture* pic) {
           return 0;
         }
       }
+    }
+
+    if (!config->exact) {
+      WebPCleanupTransparentArea(pic);
     }
 
     enc = InitVP8Encoder(config, pic);

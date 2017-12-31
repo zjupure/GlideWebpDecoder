@@ -1,3 +1,4 @@
+# libwebp version 0.6.1, https://github.com/webmproject/libwebp/tree/master
 LOCAL_PATH := $(call my-dir)
 
 WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED
@@ -38,8 +39,6 @@ LOCAL_SRC_FILES := \
     src/dsp/alpha_processing_neon.$(NEON) \
     src/dsp/alpha_processing_sse2.c \
     src/dsp/alpha_processing_sse41.c \
-    src/dsp/argb.c \
-    src/dsp/argb_sse2.c \
     src/dsp/cpu.c \
     src/dsp/dec.c \
     src/dsp/dec_clip_tables.c \
@@ -55,10 +54,13 @@ LOCAL_SRC_FILES := \
     src/dsp/rescaler.c \
     src/dsp/rescaler_neon.$(NEON) \
     src/dsp/rescaler_sse2.c \
+    src/dsp/ssim.c \
+    src/dsp/ssim_sse2.c \
     src/dsp/upsampling.c \
     src/dsp/upsampling_neon.$(NEON) \
     src/dsp/upsampling_sse2.c \
     src/dsp/yuv.c \
+    src/dsp/yuv_neon.$(NEON) \
     src/dsp/yuv_sse2.c \
     src/utils/bit_reader_utils.c \
     src/utils/color_cache_utils.c \
@@ -75,7 +77,6 @@ LOCAL_SRC_FILES := \
 
 UNUSED_SRCS := \
     src/dsp/alpha_processing_mips_dsp_r2.c \
-    src/dsp/argb_mips_dsp_r2.c \
     src/dsp/filters_mips_dsp_r2.c \
     src/dsp/lossless_mips_dsp_r2.c \
     src/dsp/rescaler_mips32.c \
@@ -111,6 +112,7 @@ UNUSED_SRCS := \
     src/dsp/upsampling_msa.c \
     src/enc/alpha_enc.c \
     src/enc/analysis_enc.c \
+    src/enc/backward_references_cost_enc.c \
     src/enc/backward_references_enc.c \
     src/enc/config_enc.c \
     src/enc/cost_enc.c \

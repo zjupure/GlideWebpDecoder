@@ -13,8 +13,8 @@
 //          Vikas (vikasa@google.com)
 
 #include <assert.h>
-#include "./muxi.h"
-#include "../utils/utils.h"
+#include "src/mux/muxi.h"
+#include "src/utils/utils.h"
 
 //------------------------------------------------------------------------------
 // Helper method(s).
@@ -43,7 +43,7 @@ static WebPMuxError MuxGet(const WebPMux* const mux, CHUNK_INDEX idx,
   SWITCH_ID_LIST(IDX_ANIM, mux->anim_);
   SWITCH_ID_LIST(IDX_EXIF, mux->exif_);
   SWITCH_ID_LIST(IDX_XMP, mux->xmp_);
-  SWITCH_ID_LIST(IDX_UNKNOWN, mux->unknown_);
+  assert(idx != IDX_UNKNOWN);
   return WEBP_MUX_NOT_FOUND;
 }
 #undef SWITCH_ID_LIST
@@ -269,6 +269,9 @@ WebPMux* WebPMuxCreateInternal(const WebPData* bitstream, int copy_data,
     size -= data_size;
     ChunkInit(&chunk);
   }
+
+  // Incomplete image.
+  if (wpi->is_partial_) goto Err;
 
   // Validate mux if complete.
   if (MuxValidate(mux) != WEBP_MUX_OK) goto Err;

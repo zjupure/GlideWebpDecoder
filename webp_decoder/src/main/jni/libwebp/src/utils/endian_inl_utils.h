@@ -9,15 +9,15 @@
 //
 // Endian related functions.
 
-#ifndef WEBP_UTILS_ENDIAN_INL_H_
-#define WEBP_UTILS_ENDIAN_INL_H_
+#ifndef WEBP_UTILS_ENDIAN_INL_UTILS_H_
+#define WEBP_UTILS_ENDIAN_INL_UTILS_H_
 
 #ifdef HAVE_CONFIG_H
-#include "../webp/config.h"
+#include "src/webp/config.h"
 #endif
 
-#include "../dsp/dsp.h"
-#include "../webp/types.h"
+#include "src/dsp/dsp.h"
+#include "src/webp/types.h"
 
 // some endian fix (e.g.: mips-gcc doesn't define __BIG_ENDIAN__)
 #if !defined(WORDS_BIGENDIAN) && \
@@ -97,4 +97,4 @@ static WEBP_INLINE uint64_t BSwap64(uint64_t x) {
 #endif  // HAVE_BUILTIN_BSWAP64
 }
 
-#endif  // WEBP_UTILS_ENDIAN_INL_H_
+#endif  // WEBP_UTILS_ENDIAN_INL_UTILS_H_
