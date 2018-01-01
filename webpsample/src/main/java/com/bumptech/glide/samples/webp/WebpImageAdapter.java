@@ -43,6 +43,8 @@ public class WebpImageAdapter extends RecyclerView.Adapter<WebpImageAdapter.Imag
         mContext = context;
         mWebpUrls = new ArrayList<>();
         mWebpUrls.addAll(urls);
+        String resUrl = "android.resource://" + context.getPackageName() + "/" + R.drawable.broken;
+        mWebpUrls.add(resUrl);
     }
 
     public void updateData(List<String> urls) {

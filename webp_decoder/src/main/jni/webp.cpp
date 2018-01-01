@@ -270,6 +270,7 @@ getWebPImageNative(JNIEnv* pEnv, jobject thiz) {
     // A deleter that decrements the reference and possibly deletes the instance.
     WebPImageNativeReleaser releaser(pEnv, thiz);
     std::unique_ptr<WebPImage, WebPImageNativeReleaser> ret(nullptr, releaser);
+
     pEnv->MonitorEnter(thiz);
     WebPImage* pNativeContext =
             (WebPImage*) pEnv->GetLongField(thiz, sWebPImageFieldNativePtr);
@@ -375,6 +376,12 @@ jobject WebPImage_nativeGetFrame(JNIEnv* pEnv, jobject thiz, jint index) {
  * reaches 0
  */
 void WebPFrameNative_releaseRef(JNIEnv* pEnv, jobject thiz, WebPFrame* p) {
+    // clear pending exception before call MonitorEnter
+    if (pEnv->ExceptionOccurred()) {
+        pEnv->ExceptionClear();
+    }
+
+    //__android_log_print(ANDROID_LOG_DEBUG, "GLIDE_WEBP", "MonitorEnter called in WebPFrameNative_releaseRef");
     pEnv->MonitorEnter(thiz);
     p->refCount--;
     if (p->refCount == 0) {
@@ -412,6 +419,7 @@ getWebPFrameNative(JNIEnv* pEnv, jobject thiz) {
 
     WebPFrameNativeReleaser releaser(pEnv, thiz);
     std::unique_ptr<WebPFrame, WebPFrameNativeReleaser> ret(nullptr, releaser);
+
     pEnv->MonitorEnter(thiz);
     WebPFrame* pNativeContext =
             (WebPFrame*) pEnv->GetLongField(thiz, sWebPFrameFieldNativePtr);
@@ -443,6 +451,7 @@ jint WebPImage_nativeGetSizeInBytes(JNIEnv* pEnv, jobject thiz) {
  * Disposes the WebImage, freeing native resources.
  */
 void WebImage_nativeDispose(JNIEnv* pEnv, jobject thiz) {
+
     pEnv->MonitorEnter(thiz);
     WebPImage* pNativeContext =
             (WebPImage*) pEnv->GetLongField(thiz, sWebPImageFieldNativePtr);
@@ -546,6 +555,8 @@ void WebPFrame_nativeRenderFrame(
     ret = WebPDecode(pPayload, payloadSize, &config);
     AndroidBitmap_unlockPixels(pEnv, bitmap);
     if (ret != VP8_STATUS_OK) {
+        __android_log_print(ANDROID_LOG_WARN, "GLIDE_WEBP",
+                        "Failed to decode frame, ret=%d", ret);
         throwIllegalStateException(pEnv, "Failed to decode frame");
     }
 }
@@ -555,6 +566,12 @@ void WebPFrame_nativeRenderFrame(
  * Disposes the WebPFrameIterator, freeing native resources.
  */
 void WebPFrame_nativeDispose(JNIEnv* pEnv, jobject thiz) {
+    // clear pending exception before call MonitorEnter
+    if (pEnv->ExceptionOccurred()) {
+        pEnv->ExceptionClear();
+    }
+
+    //__android_log_print(ANDROID_LOG_DEBUG, "GLIDE_WEBP", "MonitorEnter called in WebPFrame_nativeDispose");
     pEnv->MonitorEnter(thiz);
     WebPFrame* pNativeContext =
             (WebPFrame*) pEnv->GetLongField(thiz, sWebPFrameFieldNativePtr);
