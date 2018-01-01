@@ -13,7 +13,7 @@ Library is available in jcenter. If you are build with Gradle, just add the foll
 
 ```gradle
 // webpdecoder
-compile 'com.zlc.glide:webpdecoder:0.0.2'
+compile 'com.zlc.glide:webpdecoder:0.0.3'
 // glide 
 compile 'com.github.bumptech.glide:glide:4.2.0'
 annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
