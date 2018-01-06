@@ -16,6 +16,7 @@
 
 package android.support.rastermill;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -31,6 +32,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.SystemClock;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 public class FrameSequenceDrawable extends Drawable implements Animatable, Runnable {
@@ -143,6 +145,8 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
 
     private final FrameSequence mFrameSequence;
     private final FrameSequence.State mFrameSequenceState;
+
+    private final FsState mFsState;
 
     private final Paint mPaint;
     private BitmapShader mFrontBitmapShader;
@@ -275,6 +279,8 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
         mSrcRect = new Rect(0, 0, width, height);
         mPaint = new Paint();
         mPaint.setFilterBitmap(true);
+
+        mFsState = new FsState(frameSequence, bitmapProvider);
 
         mFrontBitmapShader
             = new BitmapShader(mFrontBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
@@ -506,6 +512,11 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
         return changed;
     }
 
+
+    public int getSize() {
+        return mFrameSequence.getWidth() * mFrameSequence.getHeight() * 4;
+    }
+
     // drawing properties
 
     @Override
@@ -536,5 +547,35 @@ public class FrameSequenceDrawable extends Drawable implements Animatable, Runna
     @Override
     public int getOpacity() {
         return mFrameSequence.isOpaque() ? PixelFormat.OPAQUE : PixelFormat.TRANSPARENT;
+    }
+
+    @Nullable
+    @Override
+    public ConstantState getConstantState() {
+        return mFsState;
+    }
+
+    final static class FsState extends ConstantState {
+        FrameSequence fs;
+        BitmapProvider bitmapProvider;
+
+        FsState(FrameSequence fs, BitmapProvider bitmapProvider) {
+            this.fs = fs;
+            this.bitmapProvider = bitmapProvider;
+        }
+
+
+        public Drawable newDrawable(@Nullable Resources res) {
+            return newDrawable();
+        }
+
+        public Drawable newDrawable() {
+            return new FrameSequenceDrawable(fs, bitmapProvider);
+        }
+
+
+        public int getChangingConfigurations() {
+            return 0;
+        }
     }
 }

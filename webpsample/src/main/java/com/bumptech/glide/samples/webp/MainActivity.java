@@ -9,7 +9,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Displays an webp image loaded from an android raw resource.
@@ -42,6 +44,13 @@ public class MainActivity extends Activity {
           "https://isparta.github.io/compare-webp/image/gif_webp/webp/2.webp",
   };
 
+  private static final String[] ANIM_GIF = {
+          "https://78.media.tumblr.com/a0c1be3183449f0d207a022c28f4bbf7/tumblr_p1p2cduAiA1wmghc4o1_500.gif",
+          "https://78.media.tumblr.com/31ff4ea771940d2403323c1416b81064/tumblr_p1ymv2Xghn1qbt8b8o2_500.gif",
+          "https://78.media.tumblr.com/45c7b305f0dbdb9a3c941be1d86aceca/tumblr_p202yd8Jz11uashjdo3_500.gif",
+          "https://78.media.tumblr.com/167e9c5a0534d2718853a2e3985d64e2/tumblr_p1yth5CHXk1srs2u0o1_500.gif",
+          "https://78.media.tumblr.com/e7548bfe04a9fdadcac440a5802fb570/tumblr_p1zj4dyrxN1u4mwxfo1_500.gif",
+  };
 
 
   private TextView mTextView;
@@ -56,7 +65,12 @@ public class MainActivity extends Activity {
     mTextView = (TextView) findViewById(R.id.webp_image_type);
     mRecyclerView = (RecyclerView) findViewById(R.id.webp_recycler_view);
     mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-    mWebpAdapter = new WebpImageAdapter(this, Arrays.asList(ANIM_WEBP));
+
+    List<String> imageList = new ArrayList<>();
+    imageList.addAll(Arrays.asList(ANIM_WEBP));
+    imageList.addAll(Arrays.asList(ANIM_GIF));
+
+    mWebpAdapter = new WebpImageAdapter(this, imageList);
     mRecyclerView.setAdapter(mWebpAdapter);
   }
 

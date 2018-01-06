@@ -1,5 +1,4 @@
-package com.bumptech.glide.integration.webp;
-
+package com.bumptech.glide.integration.framesequence;
 
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -76,10 +75,10 @@ public class WebpHeaderParser{
 
     public static boolean isStaticWebpType(WebpImageType imageType) {
         return imageType == WebpImageType.WEBP_SIMPLE ||
-           imageType == WebpImageType.WEBP_LOSSLESS ||
-           imageType == WebpImageType.WEBP_LOSSLESS_WITH_ALPHA ||
-           imageType == WebpImageType.WEBP_EXTENDED ||
-           imageType == WebpImageType.WEBP_EXTENDED_WITH_ALPHA;
+                imageType == WebpImageType.WEBP_LOSSLESS ||
+                imageType == WebpImageType.WEBP_LOSSLESS_WITH_ALPHA ||
+                imageType == WebpImageType.WEBP_EXTENDED ||
+                imageType == WebpImageType.WEBP_EXTENDED_WITH_ALPHA;
     }
 
 

@@ -17,10 +17,13 @@
 package android.support.rastermill;
 
 import android.graphics.Bitmap;
+import android.support.annotation.Keep;
+
 import java.nio.ByteBuffer;
 
 import java.io.InputStream;
 
+@Keep
 public class FrameSequence {
     static {
         System.loadLibrary("framesequence");
