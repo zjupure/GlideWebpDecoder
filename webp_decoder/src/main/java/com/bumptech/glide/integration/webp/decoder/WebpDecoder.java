@@ -43,6 +43,8 @@ public class WebpDecoder implements GifDecoder {
     private int downsampledWidth;
     private final Paint mBackgroundPaint;
     private final Paint mTransparentFillPaint;
+
+    private Bitmap.Config mBitmapConfig = Bitmap.Config.ARGB_8888;
     // 动画每一帧渲染后的Bitmap缓存
     private LruCache<Integer, Bitmap> mFrameBitmapCache;
 
@@ -151,6 +153,16 @@ public class WebpDecoder implements GifDecoder {
         return mWebPImage.getSizeInBytes();
     }
 
+    /** @Override Added in Glide 4.4.0 */
+    public void setDefaultBitmapConfig(Bitmap.Config config) {
+        if (config != Bitmap.Config.ARGB_8888) {
+            throw new IllegalArgumentException("Unsupported format: " + config
+                    + ", must be one of " + Bitmap.Config.ARGB_8888);
+        }
+
+        mBitmapConfig = config;
+    }
+
     @Override
     public Bitmap getNextFrame() {
         int frameNumber = getCurrentFrameIndex();
@@ -211,7 +223,7 @@ public class WebpDecoder implements GifDecoder {
         Log.i(TAG, "render frame with native method");
         WebpFrame webpFrame = mWebPImage.getFrame(frameNumber);
         try {
-            Bitmap frameBitmap = mBitmapProvider.obtain(frameWidth, frameHeight, Bitmap.Config.ARGB_8888);
+            Bitmap frameBitmap = mBitmapProvider.obtain(frameWidth, frameHeight, mBitmapConfig);
             frameBitmap.eraseColor(Color.TRANSPARENT);
             webpFrame.renderFrame(frameWidth, frameHeight, frameBitmap);
             canvas.drawBitmap(frameBitmap, xOffset, yOffset, null);
