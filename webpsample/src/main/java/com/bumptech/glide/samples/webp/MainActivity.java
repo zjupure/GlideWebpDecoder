@@ -57,6 +57,8 @@ public class MainActivity extends Activity {
   private RecyclerView mRecyclerView;
   private WebpImageAdapter mWebpAdapter;
 
+  private Menu mActionMenu;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -68,7 +70,6 @@ public class MainActivity extends Activity {
 
     List<String> imageList = new ArrayList<>();
     imageList.addAll(Arrays.asList(ANIM_WEBP));
-    imageList.addAll(Arrays.asList(ANIM_GIF));
 
     mWebpAdapter = new WebpImageAdapter(this, imageList);
     mRecyclerView.setAdapter(mWebpAdapter);
@@ -83,6 +84,7 @@ public class MainActivity extends Activity {
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     getMenuInflater().inflate(R.menu.menu_main, menu);
+    mActionMenu = menu;
     return super.onCreateOptionsMenu(menu);
   }
 
@@ -91,10 +93,7 @@ public class MainActivity extends Activity {
   public boolean onOptionsItemSelected(MenuItem item) {
 
     int id = item.getItemId();
-    item.setChecked(!item.isChecked());
-    if (!item.isChecked()) {
-      return super.onOptionsItemSelected(item);
-    }
+    handleMenuItemCheck(item);
 
     if (id == R.id.static_webp_action) {
       mTextView.setText("static lossy webp");
@@ -105,9 +104,28 @@ public class MainActivity extends Activity {
     } else if(id == R.id.animate_webp_action) {
       mTextView.setText("animated webp");
       mWebpAdapter.updateData(Arrays.asList(ANIM_WEBP));
+    } else if(id == R.id.animate_gif_action) {
+      mTextView.setText("animated gif");
+      mWebpAdapter.updateData(Arrays.asList(ANIM_GIF));
     }
 
     return true;
   }
 
+
+  private void handleMenuItemCheck(MenuItem menuItem) {
+    if (mActionMenu == null) {
+      menuItem.setChecked(true);
+      return;
+    }
+
+    for (int i = 0; i < mActionMenu.size(); i++) {
+      MenuItem item = mActionMenu.getItem(i);
+      if (item.getItemId() == menuItem.getItemId()) {
+        item.setChecked(true);
+      } else {
+        item.setChecked(false);
+      }
+    }
+  }
 }

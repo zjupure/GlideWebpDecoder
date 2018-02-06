@@ -67,7 +67,7 @@ public class WebpDecoder implements GifDecoder {
         mTransparentFillPaint = new Paint(mBackgroundPaint);
         mTransparentFillPaint.setColor(Color.TRANSPARENT);
 
-        mFrameBitmapCache = new LruCache<>(MAX_FRAME_BITMAP_SIZE);
+        mFrameBitmapCache = new LruCache<Integer, Bitmap>(MAX_FRAME_BITMAP_SIZE);
 
         setData(new GifHeader(), rawData, sampleSize);
     }
