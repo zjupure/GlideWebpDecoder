@@ -6,6 +6,9 @@ import com.bumptech.glide.util.Preconditions;
 
 import java.nio.ByteBuffer;
 
+import static com.bumptech.glide.integration.webp.WebpFrame.FRAME_DURATION_MS_FOR_MIN;
+import static com.bumptech.glide.integration.webp.WebpFrame.MIN_FRAME_DURATION_MS;
+
 /**
  *  a WebpImage container whose encoded data held by native ptr
  *
@@ -62,10 +65,22 @@ public class WebpImage {
         mDurationMs = durationMs;
         mFrameDurations = frameDurations;
         mLoopCount = loopCount;
+        fixFrameDurations(mFrameDurations);
 
         mBackgroundColor = backgroundColor;
 
         mNativePtr = nativePtr;
+    }
+
+    /**
+     * Adjust the frame duration to respect logic for minimum frame duration times
+     */
+    private void fixFrameDurations(int[] frameDurationMs) {
+        for (int i = 0; i < frameDurationMs.length; i++) {
+            if (frameDurationMs[i] < MIN_FRAME_DURATION_MS) {
+                frameDurationMs[i] = FRAME_DURATION_MS_FOR_MIN;
+            }
+        }
     }
 
     @Override

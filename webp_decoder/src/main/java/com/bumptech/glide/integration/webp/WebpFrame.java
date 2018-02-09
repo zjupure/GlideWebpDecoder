@@ -12,6 +12,11 @@ import android.support.annotation.Keep;
  */
 @Keep
 public class WebpFrame {
+
+    // See comment in fixFrameDuration below.
+    static final int MIN_FRAME_DURATION_MS = 20;
+    static final int FRAME_DURATION_MS_FOR_MIN = 100;
+
     // Access from Native
     @Keep
     private long mNativePtr;
@@ -46,6 +51,21 @@ public class WebpFrame {
         this.delay = delay;
         this.blendPreviousFrame = blendPreviousFrame;
         this.disposeBackgroundColor = disposeBackgroundColor;
+        fixFrameDuration();
+    }
+
+    /**
+     * Adjust the frame duration to respect logic for minimum frame duration times
+     */
+    private void fixFrameDuration() {
+        // We follow Chrome's behavior which comes from Firefox.
+        // Comment from Chrome's ImageSource.cpp follows:
+        // We follow Firefox's behavior and use a duration of 100 ms for any frames that specify
+        // a duration of <= 10 ms. See <rdar://problem/7689300> and <http://webkit.org/b/36082>
+        // for more information.
+        if (delay < MIN_FRAME_DURATION_MS) {
+            delay = FRAME_DURATION_MS_FOR_MIN;
+        }
     }
 
     @Override
