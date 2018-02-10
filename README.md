@@ -13,15 +13,13 @@ Library is available in jcenter. If you are build with Gradle, just add the foll
 
 ```gradle
 // webpdecoder
-compile 'com.zlc.glide:webpdecoder:0.0.5'
+compile 'com.zlc.glide:webpdecoder:0.0.6'
 // glide 4.2
 compile 'com.github.bumptech.glide:glide:4.2.0'
 annotationProcessor 'com.github.bumptech.glide:compiler:4.2.0'
 ```
 
 Then you are free to use GlideWebpDecoder just like use other Glide integration library.
-
-Notice: if you want to upgrade Glide version to 4.4, please use webpdecoder 0.0.4;
 
 ## Proguard
 
