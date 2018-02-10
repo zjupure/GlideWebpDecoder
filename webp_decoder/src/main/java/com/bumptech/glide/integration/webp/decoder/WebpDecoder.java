@@ -56,7 +56,9 @@ public class WebpDecoder implements GifDecoder {
         mFrameInfos = new WebpFrameInfo[webPImage.getFrameCount()];
         for (int i = 0; i < mWebPImage.getFrameCount(); i++) {
             mFrameInfos[i] = mWebPImage.getFrameInfo(i);
-            Log.i(TAG, "mFrameInfos: " + mFrameInfos[i].toString());
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "mFrameInfos: " + mFrameInfos[i].toString());
+            }
         }
 
         mBackgroundPaint = new Paint();
@@ -180,7 +182,9 @@ public class WebpDecoder implements GifDecoder {
             nextIndex = frameNumber;
         }
 
-        Log.i(TAG, "frameNumber=" + frameNumber + ", nextIndex=" + nextIndex);
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log.d(TAG, "frameNumber=" + frameNumber + ", nextIndex=" + nextIndex);
+        }
 
         for (int index = nextIndex; index < frameNumber; index++) {
             WebpFrameInfo frameInfo = mFrameInfos[index];
@@ -190,7 +194,11 @@ public class WebpDecoder implements GifDecoder {
 
             // render the previous frame
             renderFrame(index, canvas);
-            Log.i(TAG, "renderFrame, index=" + index + ", blend=" + frameInfo.blendPreviousFrame + ", dispose=" + frameInfo.disposeBackgroundColor);
+
+            if (Log.isLoggable(TAG, Log.DEBUG)) {
+                Log.d(TAG, "renderFrame, index=" + index + ", blend=" + frameInfo.blendPreviousFrame
+                        + ", dispose=" + frameInfo.disposeBackgroundColor);
+            }
 
             if (frameInfo.disposeBackgroundColor) {
                 disposeToBackground(canvas, frameInfo);
@@ -204,7 +212,11 @@ public class WebpDecoder implements GifDecoder {
 
         // Finally, we render the current frame. We don't dispose it.
         renderFrame(frameNumber, canvas);
-        Log.i(TAG, "renderFrame, index=" + frameNumber + ", blend=" + frameInfo.blendPreviousFrame + ", dispose=" + frameInfo.disposeBackgroundColor);
+
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
+            Log.d(TAG, "renderFrame, index=" + frameNumber + ", blend=" + frameInfo.blendPreviousFrame
+                    + ", dispose=" + frameInfo.disposeBackgroundColor);
+        }
         // Then put the rendered frame into the BitmapCache
         mFrameBitmapCache.put(frameNumber, bitmap);
 
@@ -220,7 +232,6 @@ public class WebpDecoder implements GifDecoder {
         int xOffset = frameInfo.xOffset / sampleSize;
         int yOffset = frameInfo.yOffset / sampleSize;
 
-        Log.i(TAG, "render frame with native method");
         WebpFrame webpFrame = mWebPImage.getFrame(frameNumber);
         try {
             Bitmap frameBitmap = mBitmapProvider.obtain(frameWidth, frameHeight, mBitmapConfig);
@@ -287,7 +298,7 @@ public class WebpDecoder implements GifDecoder {
                 // need to draw this frame
                 Bitmap bitmap = mFrameBitmapCache.get(index);
                 if (bitmap != null && !bitmap.isRecycled()) {
-                    Log.i(TAG, "draw previous frame to the canvas, index=" + index);
+
                     canvas.drawBitmap(bitmap, 0, 0, null);
                     if (frameInfo.disposeBackgroundColor) {
                         disposeToBackground(canvas, frameInfo);
