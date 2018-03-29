@@ -13,12 +13,12 @@ Library is available in jcenter. If you are build with Gradle, just add the foll
 Different Glide version is corresponding to different GlideWebpDecoder. The version rule of GlideWebpDecoder is "{major_version}.{glide_version}".
 For example, if you use glide 4.6.1, the corresponding version of GlideWebpDecoder should be 0.0.7.4.6.1
 
-Glide 4.6.0 is broken, see ![issue 2863](https://github.com/bumptech/glide/issues/2863)
+Glide 4.6.0 is broken, see [issue 2863](https://github.com/bumptech/glide/issues/2863)
 
 ```gradle
 def GLIDE_VERSION = "4.6.1"
 // webpdecoder
-compile "com.zlc.glide:webpdecoder:0.0.6.${GLIDE_VERSION}"
+compile "com.zlc.glide:webpdecoder:0.0.7.${GLIDE_VERSION}"
 // glide 4.2~4.6.1
 compile "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
