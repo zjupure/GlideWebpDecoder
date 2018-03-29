@@ -75,17 +75,14 @@ public final class WebpDownsampler {
     private final ArrayPool byteArrayPool;
     private final List<ImageHeaderParser> parsers;
 
-    private final Downsampler downsampler;
     //private final HardwareConfigState hardwareConfigState = HardwareConfigState.getInstance();
 
     public WebpDownsampler(List<ImageHeaderParser> parsers, DisplayMetrics displayMetrics,
-                       BitmapPool bitmapPool, ArrayPool byteArrayPool,
-                           Downsampler downsampler) {
+                       BitmapPool bitmapPool, ArrayPool byteArrayPool) {
         this.parsers = parsers;
         this.displayMetrics = Preconditions.checkNotNull(displayMetrics);
         this.bitmapPool = Preconditions.checkNotNull(bitmapPool);
         this.byteArrayPool = Preconditions.checkNotNull(byteArrayPool);
-        this.downsampler = downsampler;
     }
 
     public boolean handles(InputStream is, Options options) throws IOException{
@@ -98,8 +95,7 @@ public final class WebpDownsampler {
         WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(is, byteArrayPool);
         // handle lossless and transparent webp
         return WebpHeaderParser.isStaticWebpType(webpType)
-                && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE
-                && downsampler.handles(is);
+                && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE;
     }
 
     public boolean handles(ByteBuffer byteBuffer, Options options) throws IOException{
@@ -112,14 +108,9 @@ public final class WebpDownsampler {
         WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(byteBuffer);
         // handle lossless and transparent webp
         return WebpHeaderParser.isStaticWebpType(webpType)
-                && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE
-                && downsampler.handles(byteBuffer);
+                && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE;
     }
 
-
-    Downsampler getDownsampler() {
-        return downsampler;
-    }
 
     /**
      * Returns a Bitmap decoded from the given {@link InputStream} that is rotated to match any EXIF

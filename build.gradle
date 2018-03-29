@@ -79,5 +79,6 @@ task wrapper(type: Wrapper) {
 
 ext {
     GLIDE_MAJOR_VERSION = GLIDE_VERSION.split("\\.")[0] as String
+    VERSION_NAME = "${DECODER_VERSION}.${GLIDE_VERSION}"
 }
 

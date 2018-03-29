@@ -3,8 +3,8 @@ package com.bumptech.glide.integration.webp.decoder;
 import android.graphics.Bitmap;
 
 import com.bumptech.glide.load.Options;
+import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.engine.Resource;
-import com.bumptech.glide.load.resource.bitmap.ByteBufferBitmapDecoder;
 import com.bumptech.glide.util.ByteBufferUtil;
 
 import java.io.IOException;
@@ -16,11 +16,10 @@ import java.nio.ByteBuffer;
  *
  * @author liuchun
  */
-public class ByteBufferBitmapWebpDecoder extends ByteBufferBitmapDecoder {
+public class ByteBufferBitmapWebpDecoder implements ResourceDecoder<ByteBuffer, Bitmap> {
     private final WebpDownsampler downsampler;
 
     public ByteBufferBitmapWebpDecoder(WebpDownsampler downsampler) {
-        super(downsampler.getDownsampler());
         this.downsampler = downsampler;
     }
 

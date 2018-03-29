@@ -3,9 +3,9 @@ package com.bumptech.glide.integration.webp.decoder;
 import android.graphics.Bitmap;
 
 import com.bumptech.glide.load.Options;
+import com.bumptech.glide.load.ResourceDecoder;
 import com.bumptech.glide.load.engine.Resource;
 import com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool;
-import com.bumptech.glide.load.resource.bitmap.StreamBitmapDecoder;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,13 +15,14 @@ import java.io.InputStream;
  *
  * @author liuchun
  */
-public class StreamBitmapWebpDecoder extends StreamBitmapDecoder {
+public class StreamBitmapWebpDecoder implements ResourceDecoder<InputStream, Bitmap> {
     private final WebpDownsampler downsampler;
+    private final ArrayPool byteArrayPool;
 
 
     public StreamBitmapWebpDecoder(WebpDownsampler downsampler, ArrayPool byteArrayPool) {
-        super(downsampler.getDownsampler(), byteArrayPool);
         this.downsampler = downsampler;
+        this.byteArrayPool = byteArrayPool;
     }
 
     @Override

@@ -42,12 +42,10 @@ public class WebpGlideModule implements com.bumptech.glide.module.GlideModule {
         final BitmapPool bitmapPool = glide.getBitmapPool();
         final ArrayPool arrayPool = glide.getArrayPool();
         /* static webp decoders */
-        Downsampler downsampler = new Downsampler(registry.getImageHeaderParsers(),
-                resources.getDisplayMetrics(), bitmapPool, arrayPool);
         WebpDownsampler webpDownsampler = new WebpDownsampler(registry.getImageHeaderParsers(),
-                resources.getDisplayMetrics(), bitmapPool, arrayPool, downsampler);
-        ByteBufferBitmapDecoder byteBufferBitmapDecoder = new ByteBufferBitmapWebpDecoder(webpDownsampler);
-        StreamBitmapDecoder streamBitmapDecoder = new StreamBitmapWebpDecoder(webpDownsampler, arrayPool);
+                resources.getDisplayMetrics(), bitmapPool, arrayPool);
+        ByteBufferBitmapWebpDecoder byteBufferBitmapDecoder = new ByteBufferBitmapWebpDecoder(webpDownsampler);
+        StreamBitmapWebpDecoder streamBitmapDecoder = new StreamBitmapWebpDecoder(webpDownsampler, arrayPool);
         /* animate webp decoders */
         ByteBufferWebpDecoder byteBufferWebpDecoder =
                 new ByteBufferWebpDecoder(context, arrayPool, bitmapPool);
