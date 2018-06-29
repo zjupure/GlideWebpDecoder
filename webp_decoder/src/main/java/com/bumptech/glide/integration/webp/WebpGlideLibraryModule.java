@@ -56,12 +56,12 @@ public class WebpGlideLibraryModule extends LibraryGlideModule {
                         Registry.BUCKET_BITMAP_DRAWABLE,
                         ByteBuffer.class,
                         BitmapDrawable.class,
-                        new BitmapDrawableDecoder<>(resources, bitmapPool, byteBufferBitmapDecoder))
+                        new BitmapDrawableDecoder<>(resources, byteBufferBitmapDecoder))
                 .prepend(
                         Registry.BUCKET_BITMAP_DRAWABLE,
                         InputStream.class,
                         BitmapDrawable.class,
-                        new BitmapDrawableDecoder<>(resources, bitmapPool, streamBitmapDecoder))
+                        new BitmapDrawableDecoder<>(resources, streamBitmapDecoder))
                 /* Animated webp images */
                 .prepend(ByteBuffer.class, WebpDrawable.class, byteBufferWebpDecoder)
                 .prepend(InputStream.class, WebpDrawable.class, new StreamWebpDecoder(byteBufferWebpDecoder, arrayPool))
