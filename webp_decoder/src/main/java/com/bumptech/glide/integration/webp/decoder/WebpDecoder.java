@@ -7,10 +7,10 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.util.Log;
+import android.util.LruCache;
 
 import com.bumptech.glide.gifdecoder.GifDecoder;
 import com.bumptech.glide.gifdecoder.GifHeader;
-import com.bumptech.glide.util.LruCache;
 import com.bumptech.glide.integration.webp.WebpFrameInfo;
 import com.bumptech.glide.integration.webp.WebpImage;
 import com.bumptech.glide.integration.webp.WebpFrame;
@@ -170,6 +170,7 @@ public class WebpDecoder implements GifDecoder {
         int frameNumber = getCurrentFrameIndex();
         // Get the target Bitmap for Canvas
         Bitmap bitmap = mBitmapProvider.obtain(downsampledWidth, downsampledHeight, Bitmap.Config.ARGB_8888);
+        //bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 
@@ -254,7 +255,7 @@ public class WebpDecoder implements GifDecoder {
     public void clear() {
         mWebPImage.dispose();
         mWebPImage = null;
-        mFrameBitmapCache.clearMemory();
+        mFrameBitmapCache.evictAll();
         rawData = null;
     }
 
