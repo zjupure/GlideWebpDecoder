@@ -35,7 +35,7 @@ public class WebpDecoder implements GifDecoder {
     private ByteBuffer rawData;
     /** WebpImage instance */
     private WebpImage mWebPImage;
-    private GifDecoder.BitmapProvider mBitmapProvider;
+    private final GifDecoder.BitmapProvider mBitmapProvider;
     private int mFramePointer;
     private final int[] mFrameDurations;
     private final WebpFrameInfo[] mFrameInfos;
@@ -46,8 +46,17 @@ public class WebpDecoder implements GifDecoder {
     private final Paint mTransparentFillPaint;
 
     private Bitmap.Config mBitmapConfig = Bitmap.Config.ARGB_8888;
+
     // 动画每一帧渲染后的Bitmap缓存
-    private LruCache<Integer, Bitmap> mFrameBitmapCache;
+    private final LruCache<Integer, Bitmap> mFrameBitmapCache = new LruCache<Integer, Bitmap>(MAX_FRAME_BITMAP_SIZE) {
+        @Override
+        protected void entryRemoved(boolean evicted, Integer key, Bitmap oldValue, Bitmap newValue) {
+            // Return the cached frame bitmap to the provider
+            if (oldValue != null) {
+                mBitmapProvider.release(oldValue);
+            }
+        }
+    };
 
     public WebpDecoder(GifDecoder.BitmapProvider provider, WebpImage webPImage, ByteBuffer rawData,
                        int sampleSize) {
@@ -69,8 +78,6 @@ public class WebpDecoder implements GifDecoder {
 
         mTransparentFillPaint = new Paint(mBackgroundPaint);
         mTransparentFillPaint.setColor(Color.TRANSPARENT);
-
-        mFrameBitmapCache = new LruCache<Integer, Bitmap>(MAX_FRAME_BITMAP_SIZE);
 
         setData(new GifHeader(), rawData, sampleSize);
     }
@@ -247,14 +254,11 @@ public class WebpDecoder implements GifDecoder {
     }
 
     private void cacheFrameBitmap(int frameNumber, Bitmap bitmap) {
-        // Release the old cached copy
-        Bitmap cache = mFrameBitmapCache.get(frameNumber);
-        if (cache != null) {
-            mBitmapProvider.release(cache);
-        }
+        // Release the old cached bitmap
+        mFrameBitmapCache.remove(frameNumber);
 
         // Create a new copy and put it in the cache
-        cache = mBitmapProvider.obtain(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+        Bitmap cache = mBitmapProvider.obtain(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         cache.eraseColor(Color.TRANSPARENT);
 
         Canvas canvas = new Canvas(cache);
@@ -272,13 +276,8 @@ public class WebpDecoder implements GifDecoder {
     public void clear() {
         mWebPImage.dispose();
         mWebPImage = null;
-        rawData = null;
-
-        Collection<Bitmap> cachedFrameBitmaps = mFrameBitmapCache.snapshot().values();
-        for (Bitmap bitmap : cachedFrameBitmaps) {
-            mBitmapProvider.release(bitmap);
-        }
         mFrameBitmapCache.evictAll();
+        rawData = null;
     }
 
     @Override
