@@ -17,6 +17,7 @@ import com.bumptech.glide.integration.webp.WebpFrame;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Collection;
 
 
 /**
@@ -219,7 +220,7 @@ public class WebpDecoder implements GifDecoder {
                     + ", dispose=" + frameInfo.disposeBackgroundColor);
         }
         // Then put the rendered frame into the BitmapCache
-        mFrameBitmapCache.put(frameNumber, bitmap);
+        cacheFrameBitmap(frameNumber, bitmap);
 
         return bitmap;
     }
@@ -245,6 +246,22 @@ public class WebpDecoder implements GifDecoder {
         }
     }
 
+    private void cacheFrameBitmap(int frameNumber, Bitmap bitmap) {
+        // Release the old cached copy
+        Bitmap cache = mFrameBitmapCache.get(frameNumber);
+        if (cache != null) {
+            mBitmapProvider.release(cache);
+        }
+
+        // Create a new copy and put it in the cache
+        cache = mBitmapProvider.obtain(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
+        cache.eraseColor(Color.TRANSPARENT);
+
+        Canvas canvas = new Canvas(cache);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        mFrameBitmapCache.put(frameNumber, cache);
+    }
 
     @Override
     public int read(InputStream inputStream, int i) {
@@ -255,8 +272,13 @@ public class WebpDecoder implements GifDecoder {
     public void clear() {
         mWebPImage.dispose();
         mWebPImage = null;
-        mFrameBitmapCache.evictAll();
         rawData = null;
+
+        Collection<Bitmap> cachedFrameBitmaps = mFrameBitmapCache.snapshot().values();
+        for (Bitmap bitmap : cachedFrameBitmaps) {
+            mBitmapProvider.release(bitmap);
+        }
+        mFrameBitmapCache.evictAll();
     }
 
     @Override
