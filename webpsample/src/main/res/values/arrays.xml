@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="transformation">
+        <item>No Transformation</item>
+        <item>CenterCrop</item>
+        <item>CircleCrop</item>
+        <item>RoundedCorners</item>
+        <item>CenterInside</item>
+        <item>FitCenter</item>
+    </string-array>
+</resources>

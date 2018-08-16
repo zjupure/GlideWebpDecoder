@@ -13,16 +13,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 
+import com.bumptech.glide.integration.webp.decoder.WebpDrawable;
+import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.BaseTarget;
-import com.bumptech.glide.request.target.SizeReadyCallback;
 import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.target.ViewTarget;
-import com.bumptech.glide.request.transition.Transition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,23 +28,27 @@ import java.util.List;
  * author: liuchun
  * date:  2017/10/24
  */
-public class WebpImageAdapter extends RecyclerView.Adapter<WebpImageAdapter.ImageHolder> {
-    private static final String TAG = "WebpImageAdapter";
+public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder> {
+    private static final String TAG = "ImageAdapter";
 
     private Context mContext;
-    private List<String> mWebpUrls;
+    private List<String> mImageUrls;
 
-    public WebpImageAdapter(Context context, List<String> urls) {
+    private Transformation<Bitmap> mBitmapTrans;
+
+    public ImageAdapter(Context context, List<String> urls) {
         mContext = context;
-        mWebpUrls = new ArrayList<>();
-        mWebpUrls.addAll(urls);
-        String resUrl = "android.resource://" + context.getPackageName() + "/" + R.drawable.broken;
-        mWebpUrls.add(resUrl);
+        mImageUrls = new ArrayList<>();
+        mImageUrls.addAll(urls);
+    }
+
+    public void setBitmapTransformation(Transformation<Bitmap> bitmapTrans) {
+        mBitmapTrans = bitmapTrans;
     }
 
     public void updateData(List<String> urls) {
-        mWebpUrls.clear();
-        mWebpUrls.addAll(urls);
+        mImageUrls.clear();
+        mImageUrls.addAll(urls);
         notifyDataSetChanged();
     }
 
@@ -61,13 +62,27 @@ public class WebpImageAdapter extends RecyclerView.Adapter<WebpImageAdapter.Imag
 
     @Override
     public void onBindViewHolder(ImageHolder holder, int position) {
-        long size = mWebpUrls.size();
+        long size = mImageUrls.size();
         if (position < 0 || position >= size) {
             return;
         }
 
-        String url = mWebpUrls.get(position);
-        Transformation<Bitmap> circleCrop = new CircleCrop();
+        String url = mImageUrls.get(position);
+        if (mBitmapTrans != null) {
+            loadImageWithTransformation(holder.imageView, url);
+        } else {
+            loadImage(holder.imageView, url);
+        }
+
+        holder.textView.setText(url);
+    }
+
+    @Override
+    public int getItemCount() {
+        return mImageUrls.size();
+    }
+
+    private void loadImage(ImageView imageView, String url) {
         GlideApp.with(mContext)
                 .load(url)
                 .placeholder(R.drawable.image_loading)
@@ -86,17 +101,33 @@ public class WebpImageAdapter extends RecyclerView.Adapter<WebpImageAdapter.Imag
                     }
                 })
                 .error(R.drawable.image_error)
-                //.optionalTransform(circleCrop)
-                //.optionalTransform(WebpDrawable.class, new WebpDrawableTransformation(circleCrop))
-                .into(holder.imageView);
-        holder.textView.setText(url);
+                .into(imageView);
     }
 
-    @Override
-    public int getItemCount() {
-        return mWebpUrls.size();
-    }
+    private void loadImageWithTransformation(ImageView imageView, String url) {
 
+        GlideApp.with(mContext)
+                .load(url)
+                .placeholder(R.drawable.image_loading)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        Log.i(TAG, "onLoadFailed: " + e.getMessage() + ", url=" + model);
+                        e.printStackTrace();
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        Log.i(TAG, "onResourceReady: , url=" + model);
+                        return false;
+                    }
+                })
+                .error(R.drawable.image_error)
+                .optionalTransform(mBitmapTrans)
+                .optionalTransform(WebpDrawable.class, new WebpDrawableTransformation(mBitmapTrans))
+                .into(imageView);
+    }
 
     public static class ImageHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
@@ -107,26 +138,6 @@ public class WebpImageAdapter extends RecyclerView.Adapter<WebpImageAdapter.Imag
 
             imageView = (ImageView) itemView.findViewById(R.id.webp_image);
             textView = (TextView) itemView.findViewById(R.id.webp_text);
-        }
-    }
-
-
-    public static class DrawableTarget extends BaseTarget<Drawable> {
-
-        @Override
-        public void onResourceReady(Drawable resource, Transition<? super Drawable> transition) {
-            Log.i("DrawableTarget", "onResourceReady called");
-        }
-
-        @Override
-        public void getSize(SizeReadyCallback cb) {
-            Log.i("DrawableTarget", "getSize called");
-            cb.onSizeReady(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL);
-        }
-
-        @Override
-        public void removeCallback(SizeReadyCallback cb) {
-            Log.i("DrawableTarget", "removeCallback called");
         }
     }
 }

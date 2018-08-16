@@ -16,7 +16,6 @@ import java.security.MessageDigest;
  * An {@link com.bumptech.glide.load.Transformation} that wraps a transformation for a
  * {@link Bitmap} and can apply it to every frame of any
  * {@link com.bumptech.glide.integration.webp.decoder.WebpDrawable}.
- * warning: 该功能还不稳定
  *
  * @author liuchun
  */

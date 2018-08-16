@@ -12,6 +12,28 @@
         android:text="Animated Webp"
         android:textColor="#4F4F4F"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Transformation"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:gravity="center"/>
+
+        <Spinner
+            android:id="@+id/trans_selector"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:entries="@array/transformation"/>
+    </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/webp_recycler_view"
         android:layout_width="match_parent"

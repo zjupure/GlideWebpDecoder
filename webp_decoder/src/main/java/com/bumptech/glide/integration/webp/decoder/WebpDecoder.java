@@ -17,7 +17,6 @@ import com.bumptech.glide.integration.webp.WebpFrame;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.Collection;
 
 
 /**
@@ -29,7 +28,7 @@ import java.util.Collection;
 public class WebpDecoder implements GifDecoder {
     private static final String TAG = "WebpDecoder";
     // 缓存最近的Bitmap帧用于渲染当前帧
-    private static final int MAX_FRAME_BITMAP_SIZE = 5;
+    private static final int MAX_FRAME_BITMAP_CACHE_SIZE = 5;
 
     /** Raw WebP data from input source. */
     private ByteBuffer rawData;
@@ -46,17 +45,8 @@ public class WebpDecoder implements GifDecoder {
     private final Paint mTransparentFillPaint;
 
     private Bitmap.Config mBitmapConfig = Bitmap.Config.ARGB_8888;
-
     // 动画每一帧渲染后的Bitmap缓存
-    private final LruCache<Integer, Bitmap> mFrameBitmapCache = new LruCache<Integer, Bitmap>(MAX_FRAME_BITMAP_SIZE) {
-        @Override
-        protected void entryRemoved(boolean evicted, Integer key, Bitmap oldValue, Bitmap newValue) {
-            // Return the cached frame bitmap to the provider
-            if (oldValue != null) {
-                mBitmapProvider.release(oldValue);
-            }
-        }
-    };
+    private final LruCache<Integer, Bitmap> mFrameBitmapCache;
 
     public WebpDecoder(GifDecoder.BitmapProvider provider, WebpImage webPImage, ByteBuffer rawData,
                        int sampleSize) {
@@ -78,6 +68,16 @@ public class WebpDecoder implements GifDecoder {
 
         mTransparentFillPaint = new Paint(mBackgroundPaint);
         mTransparentFillPaint.setColor(Color.TRANSPARENT);
+
+        mFrameBitmapCache = new LruCache<Integer, Bitmap>(MAX_FRAME_BITMAP_CACHE_SIZE) {
+            @Override
+            protected void entryRemoved(boolean evicted, Integer key, Bitmap oldValue, Bitmap newValue) {
+                // Return the cached frame bitmap to the provider
+                if (oldValue != null) {
+                    mBitmapProvider.release(oldValue);
+                }
+            }
+        };
 
         setData(new GifHeader(), rawData, sampleSize);
     }
@@ -178,7 +178,6 @@ public class WebpDecoder implements GifDecoder {
         int frameNumber = getCurrentFrameIndex();
         // Get the target Bitmap for Canvas
         Bitmap bitmap = mBitmapProvider.obtain(downsampledWidth, downsampledHeight, Bitmap.Config.ARGB_8888);
-        //bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 
@@ -257,7 +256,7 @@ public class WebpDecoder implements GifDecoder {
         // Release the old cached bitmap
         mFrameBitmapCache.remove(frameNumber);
 
-        // Create a new copy and put it in the cache
+        // Create a new copy and put it into the cache
         Bitmap cache = mBitmapProvider.obtain(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         cache.eraseColor(Color.TRANSPARENT);
 
