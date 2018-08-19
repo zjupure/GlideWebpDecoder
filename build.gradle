@@ -4,6 +4,7 @@ buildscript {
 //        maven {
 //            url "https://oss.sonatype.org/content/repositories/snapshots"
 //        }
+        google()
     }
 
     dependencies {
@@ -34,9 +35,7 @@ subprojects { project ->
     repositories {
         mavenCentral()
         jcenter()
-        maven {
-            url "https://maven.google.com"
-        }
+        google()
     }
 
     apply plugin: 'checkstyle'
@@ -81,4 +80,3 @@ ext {
     GLIDE_MAJOR_VERSION = GLIDE_VERSION.split("\\.")[0] as String
     VERSION_NAME = "${DECODER_VERSION}.${GLIDE_VERSION}"
 }
-
