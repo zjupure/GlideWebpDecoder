@@ -1,5 +1,9 @@
 ## GlideWebpDecoder
 
+[![license](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/zjupure/GlideWebpDecoder/blob/master/LICENSE)
+[![Release Version](https://img.shields.io/badge/release-1.0-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zjupure/GlideWebpDecoder/pulls)
+
 GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decoding and displaying webp images on Android platforms. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
 
 ## Features
@@ -9,7 +13,7 @@ GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration lib
 
 ## Dependency Integration
 
-Library is available in jcenter. If you are build with Gradle, just add the following dependencies to your `build.gradle` file.
+Library is available in jcenter. If you build with Gradle, just add the following dependencies to your `build.gradle` file.
 Different Glide version is corresponding to different GlideWebpDecoder due to the annotation processor compatibility. The version rule of GlideWebpDecoder is "{major_version}.{glide_version}".
 For example, if you use glide 4.7.1, the corresponding version of GlideWebpDecoder should be 1.0.4.7.1
 
@@ -28,7 +32,24 @@ compile "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 ```
 
-Then you are free to use GlideWebpDecoder just like use other Glide integration library.
+Then you are free to use GlideWebpDecoder just like using other Glide integration library.
+
+## Usage
+
+Basic usage see [Glide](https://github.com/bumptech/glide) API [documents](https://bumptech.github.io/glide/)
+
+If you want to use `BitmapTransformation` or library [glide-transformations](https://github.com/wasabeef/glide-transformations), please use `WebpDrawableTransformation` to wrap your original `BitmapTransformation` when loading image with Glide request.
+
+Code Snippet as follow. Run sample project to see other Glide built-in transformation effect.
+
+```
+Transformation<Bitmap> circleCrop = new CircleCrop();
+GlideApp.with(mContext)
+        .load(url)
+        .optionalTransform(circleCrop)
+        .optionalTransform(WebpDrawable.class, new WebpDrawableTransformation(circleCrop))
+        .into(imageView);
+```
 
 ## Proguard
 

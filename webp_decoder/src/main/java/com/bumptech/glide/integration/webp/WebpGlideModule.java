@@ -18,9 +18,6 @@ import com.bumptech.glide.integration.webp.decoder.WebpDrawableEncoder;
 import com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapDrawableDecoder;
-import com.bumptech.glide.load.resource.bitmap.ByteBufferBitmapDecoder;
-import com.bumptech.glide.load.resource.bitmap.Downsampler;
-import com.bumptech.glide.load.resource.bitmap.StreamBitmapDecoder;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
