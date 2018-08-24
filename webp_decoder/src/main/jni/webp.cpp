@@ -270,7 +270,6 @@ getWebPImageNative(JNIEnv* pEnv, jobject thiz) {
     // A deleter that decrements the reference and possibly deletes the instance.
     WebPImageNativeReleaser releaser(pEnv, thiz);
     std::unique_ptr<WebPImage, WebPImageNativeReleaser> ret(nullptr, releaser);
-
     pEnv->MonitorEnter(thiz);
     WebPImage* pNativeContext =
             (WebPImage*) pEnv->GetLongField(thiz, sWebPImageFieldNativePtr);
@@ -320,37 +319,36 @@ jobject WebPImage_nativeGetFrame(JNIEnv* pEnv, jobject thiz, jint index) {
         return nullptr;
     }
 
-
-    auto spIter = std::unique_ptr<WebPIterator, decltype(&WebPDemuxReleaseIterator)> {
-            new WebPIterator(),
-            WebPDemuxReleaseIterator
-    };
+    WebPIterator iter = {0};
 
     // Note, in WebP, frame numbers are one-based.
-    if (!WebPDemuxGetFrame(spNativeWebPImage->spDemuxer->get(), index + 1, spIter.get())) {
+    if (!WebPDemuxGetFrame(spNativeWebPImage->spDemuxer->get(), index + 1, &iter)) {
         throwIllegalStateException(pEnv, "unable to get frame");
+        WebPDemuxReleaseIterator(&iter);
         return nullptr;
     }
 
     std::unique_ptr<WebPFrame> spNativeWebPFrame(new WebPFrame());
     if (!spNativeWebPFrame) {
         throwOutOfMemoryError(pEnv, "Unable to allocate WebPFrameNativeContext");
+        WebPDemuxReleaseIterator(&iter);
         return nullptr;
     }
 
     spNativeWebPFrame->spDemuxer = spNativeWebPImage->spDemuxer;
-    spNativeWebPFrame->frameNum = spIter->frame_num;
-    spNativeWebPFrame->xOffset = spIter->x_offset;
-    spNativeWebPFrame->yOffset = spIter->y_offset;
-    spNativeWebPFrame->durationMs = spIter->duration;
-    spNativeWebPFrame->width = spIter->width;
-    spNativeWebPFrame->height = spIter->height;
+    spNativeWebPFrame->frameNum = iter.frame_num;
+    spNativeWebPFrame->xOffset = iter.x_offset;
+    spNativeWebPFrame->yOffset = iter.y_offset;
+    spNativeWebPFrame->durationMs = iter.duration;
+    spNativeWebPFrame->width = iter.width;
+    spNativeWebPFrame->height = iter.height;
     spNativeWebPFrame->disposeToBackgroundColor =
-            spIter->dispose_method == WEBP_MUX_DISPOSE_BACKGROUND;
-    spNativeWebPFrame->blendWithPreviousFrame = spIter->blend_method == WEBP_MUX_BLEND;
-    spNativeWebPFrame->pPayload = spIter->fragment.bytes;
-    spNativeWebPFrame->payloadSize = spIter->fragment.size;
+            iter.dispose_method == WEBP_MUX_DISPOSE_BACKGROUND;
+    spNativeWebPFrame->blendWithPreviousFrame = iter.blend_method == WEBP_MUX_BLEND;
+    spNativeWebPFrame->pPayload = iter.fragment.bytes;
+    spNativeWebPFrame->payloadSize = iter.fragment.size;
 
+    WebPDemuxReleaseIterator(&iter);
     jobject ret = pEnv->NewObject(
             sClazzWebPFrame,
             sWebPFrameConstructor,
@@ -419,7 +417,6 @@ getWebPFrameNative(JNIEnv* pEnv, jobject thiz) {
 
     WebPFrameNativeReleaser releaser(pEnv, thiz);
     std::unique_ptr<WebPFrame, WebPFrameNativeReleaser> ret(nullptr, releaser);
-
     pEnv->MonitorEnter(thiz);
     WebPFrame* pNativeContext =
             (WebPFrame*) pEnv->GetLongField(thiz, sWebPFrameFieldNativePtr);
@@ -451,7 +448,6 @@ jint WebPImage_nativeGetSizeInBytes(JNIEnv* pEnv, jobject thiz) {
  * Disposes the WebImage, freeing native resources.
  */
 void WebImage_nativeDispose(JNIEnv* pEnv, jobject thiz) {
-
     pEnv->MonitorEnter(thiz);
     WebPImage* pNativeContext =
             (WebPImage*) pEnv->GetLongField(thiz, sWebPImageFieldNativePtr);
