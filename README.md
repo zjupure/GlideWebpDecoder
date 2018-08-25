@@ -15,7 +15,7 @@ GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration lib
 
 Library is available in jcenter. If you build with Gradle, just add the following dependencies to your `build.gradle` file.
 Different Glide version is corresponding to different GlideWebpDecoder due to the annotation processor compatibility. The version rule of GlideWebpDecoder is "{major_version}.{glide_version}".
-For example, if you use glide 4.7.1, the corresponding version of GlideWebpDecoder should be 1.0.4.7.1
+For example, if you use glide 4.8.0, the corresponding version of GlideWebpDecoder should be 1.0.4.8.0
 
 Library will only follow the latest three version of Glide. If you use a lower version glide, please clone the project and modify it yourself.
 
@@ -24,11 +24,11 @@ Glide 4.7.0 is not available in maven, see [issue 3015](https://github.com/bumpt
 Glide 4.6.0 is broken, see [issue 2863](https://github.com/bumptech/glide/issues/2863)
 
 ```gradle
-def GLIDE_VERSION = "4.7.1"
+def GLIDE_VERSION = "4.8.0"
 // webpdecoder
-compile "com.zlc.glide:webpdecoder:1.0.${GLIDE_VERSION}"
-// glide 4.5.0~4.7.1 (exclude broken version 4.6.0, 4.7.0)
-compile "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
+implementation "com.zlc.glide:webpdecoder:1.0.${GLIDE_VERSION}"
+// glide 4.5.0~4.8.0 (exclude broken version 4.6.0, 4.7.0)
+implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 ```
 
