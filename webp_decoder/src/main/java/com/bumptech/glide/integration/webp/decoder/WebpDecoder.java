@@ -41,7 +41,6 @@ public class WebpDecoder implements GifDecoder {
     private int sampleSize;
     private int downsampledHeight;
     private int downsampledWidth;
-    private final Paint mBackgroundPaint;
     private final Paint mTransparentFillPaint;
 
     private Bitmap.Config mBitmapConfig = Bitmap.Config.ARGB_8888;
@@ -61,13 +60,11 @@ public class WebpDecoder implements GifDecoder {
             }
         }
 
-        mBackgroundPaint = new Paint();
-        mBackgroundPaint.setColor(mWebPImage.getBackgroundColor());
-        mBackgroundPaint.setStyle(Paint.Style.FILL);
-        mBackgroundPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
-
-        mTransparentFillPaint = new Paint(mBackgroundPaint);
+        mTransparentFillPaint = new Paint();
         mTransparentFillPaint.setColor(Color.TRANSPARENT);
+        mTransparentFillPaint.setStyle(Paint.Style.FILL);
+        mTransparentFillPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
+
 
         mFrameBitmapCache = new LruCache<Integer, Bitmap>(MAX_FRAME_BITMAP_CACHE_SIZE) {
             @Override
@@ -197,7 +194,7 @@ public class WebpDecoder implements GifDecoder {
         for (int index = nextIndex; index < frameNumber; index++) {
             WebpFrameInfo frameInfo = mFrameInfos[index];
             if (!frameInfo.blendPreviousFrame) {
-                noBlendingPreviousFrame(canvas, frameInfo);
+                disposeToBackground(canvas, frameInfo);
             }
 
             // render the previous frame
@@ -215,7 +212,7 @@ public class WebpDecoder implements GifDecoder {
 
         WebpFrameInfo frameInfo = mFrameInfos[frameNumber];
         if (!frameInfo.blendPreviousFrame) {
-            noBlendingPreviousFrame(canvas, frameInfo);
+            disposeToBackground(canvas, frameInfo);
         }
 
         // Finally, we render the current frame. We don't dispose it.
@@ -335,23 +332,9 @@ public class WebpDecoder implements GifDecoder {
         return 0;
     }
 
-    /**
-     * 不需要与前一帧进行Alpha-Blending，
-     * 使用透明像素填充当前帧所在区域即可
-     *
-     * @param canvas
-     * @param frameInfo
-     */
-    private void noBlendingPreviousFrame(Canvas canvas, WebpFrameInfo frameInfo) {
-        final float left = frameInfo.xOffset / sampleSize;
-        final float top = frameInfo.yOffset / sampleSize;
-        final float right = (frameInfo.xOffset + frameInfo.width) / sampleSize;
-        final float bottom = (frameInfo.yOffset + frameInfo.height) / sampleSize;
-        canvas.drawRect(left, top, right, bottom, mTransparentFillPaint);
-    }
 
     /**
-     * 当前帧显示之后，渲染下一帧时，需要使用背景色填充当前帧所在区域
+     * 使用透明色填充帧的显示区域
      *
      * @param canvas
      * @param frameInfo
@@ -361,7 +344,7 @@ public class WebpDecoder implements GifDecoder {
         final float top = frameInfo.yOffset / sampleSize;
         final float right = (frameInfo.xOffset + frameInfo.width) / sampleSize;
         final float bottom = (frameInfo.yOffset + frameInfo.height) / sampleSize;
-        canvas.drawRect(left, top, right, bottom, mBackgroundPaint);
+        canvas.drawRect(left, top, right, bottom, mTransparentFillPaint);
     }
 
     /**
