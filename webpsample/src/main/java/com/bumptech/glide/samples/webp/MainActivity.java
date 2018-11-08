@@ -54,6 +54,7 @@ public class MainActivity extends Activity {
             "https://www.gstatic.com/webp/animated/1.webp",
             "https://mathiasbynens.be/demo/animated-webp-supported.webp",
             "https://isparta.github.io/compare-webp/image/gif_webp/webp/2.webp",
+            "http://osscdn.ixingtu.com/musi_file/20181108/a20540641eb7de9a8bf186261a8ccf57.webp",
     };
 
     private static final String[] ANIM_GIF = {

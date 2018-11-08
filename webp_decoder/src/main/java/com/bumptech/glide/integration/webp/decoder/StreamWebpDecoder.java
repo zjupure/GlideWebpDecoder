@@ -1,5 +1,6 @@
 package com.bumptech.glide.integration.webp.decoder;
 
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
@@ -39,7 +40,7 @@ public class StreamWebpDecoder implements ResourceDecoder<InputStream, WebpDrawa
 
 
     @Override
-    public boolean handles(InputStream inputStream, Options options) throws IOException {
+    public boolean handles(@NonNull InputStream inputStream, @NonNull Options options) throws IOException {
         if (options.get(DISABLE_ANIMATION)) {
             return false;
         }
@@ -50,9 +51,9 @@ public class StreamWebpDecoder implements ResourceDecoder<InputStream, WebpDrawa
 
     @Nullable
     @Override
-    public Resource<WebpDrawable> decode(InputStream inputStream, int width, int height, Options options) throws IOException {
+    public Resource<WebpDrawable> decode(@NonNull InputStream inputStream, int width, int height, @NonNull Options options) throws IOException {
 
-        byte[] data = inputStreamToBytes(inputStream);
+        byte[] data = Utils.inputStreamToBytes(inputStream);
         if (data == null) {
             return null;
         }
@@ -60,25 +61,4 @@ public class StreamWebpDecoder implements ResourceDecoder<InputStream, WebpDrawa
 
         return byteBufferDecoder.decode(byteBuffer, width, height, options);
     }
-
-
-    private static byte[] inputStreamToBytes(InputStream is) {
-        final int bufferSize = 16384;
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream(bufferSize);
-        try {
-            int nRead;
-            byte[] data = new byte[bufferSize];
-            while ((nRead = is.read(data)) != -1) {
-                buffer.write(data, 0, nRead);
-            }
-            buffer.flush();
-        } catch (IOException e) {
-            if (Log.isLoggable(TAG, Log.WARN)) {
-                Log.w(TAG, "Error reading data from stream", e);
-            }
-            return null;
-        }
-        return buffer.toByteArray();
-    }
-
 }

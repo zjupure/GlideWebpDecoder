@@ -84,22 +84,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
 
     private void loadImage(ImageView imageView, String url) {
         GlideApp.with(mContext)
+                //.asBitmap()
                 .load(url)
                 .placeholder(R.drawable.image_loading)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        Log.i(TAG, "onLoadFailed: " + e.getMessage() + ", url=" + model);
-                        e.printStackTrace();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.i(TAG, "onResourceReady: , url=" + model);
-                        return false;
-                    }
-                })
                 .error(R.drawable.image_error)
                 .into(imageView);
     }
@@ -107,22 +94,9 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
     private void loadImageWithTransformation(ImageView imageView, String url) {
 
         GlideApp.with(mContext)
+                //.asBitmap()
                 .load(url)
                 .placeholder(R.drawable.image_loading)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        Log.i(TAG, "onLoadFailed: " + e.getMessage() + ", url=" + model);
-                        e.printStackTrace();
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        Log.i(TAG, "onResourceReady: , url=" + model);
-                        return false;
-                    }
-                })
                 .error(R.drawable.image_error)
                 .optionalTransform(mBitmapTrans)
                 .optionalTransform(WebpDrawable.class, new WebpDrawableTransformation(mBitmapTrans))

@@ -1,7 +1,7 @@
 ## GlideWebpDecoder
 
 [![license](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/zjupure/GlideWebpDecoder/blob/master/LICENSE)
-[![Release Version](https://img.shields.io/badge/release-1.2-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
+[![Release Version](https://img.shields.io/badge/release-1.3-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zjupure/GlideWebpDecoder/pulls)
 
 GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decoding and displaying webp images on Android platforms. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
@@ -15,7 +15,7 @@ GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration lib
 
 Library is available in jcenter. If you build with Gradle, just add the following dependencies to your `build.gradle` file.
 Different Glide version is corresponding to different GlideWebpDecoder due to the annotation processor compatibility. The version rule of GlideWebpDecoder is "{major_version}.{glide_version}".
-For example, if you use glide 4.8.0, the corresponding version of GlideWebpDecoder should be 1.2.4.8.0
+For example, if you use glide 4.8.0, the corresponding version of GlideWebpDecoder should be 1.3.4.8.0
 
 Library will only follow the latest three version of Glide. If you use a lower version glide, please clone the project and modify it yourself.
 
@@ -26,7 +26,7 @@ Glide 4.6.0 is broken, see [issue 2863](https://github.com/bumptech/glide/issues
 ```gradle
 def GLIDE_VERSION = "4.8.0"
 // webpdecoder
-implementation "com.zlc.glide:webpdecoder:1.2.${GLIDE_VERSION}"
+implementation "com.zlc.glide:webpdecoder:1.3.${GLIDE_VERSION}"
 // glide 4.5.0~4.8.0 (exclude broken version 4.6.0, 4.7.0)
 implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"

@@ -276,24 +276,24 @@ public class WebpHeaderParser{
         }
 
         @Override
-        public int getUInt16() throws IOException {
+        public int getUInt16() {
             return (getByte() << 8 & 0xFF00) | (getByte() & 0xFF);
         }
 
         @Override
-        public short getUInt8() throws IOException {
+        public short getUInt8() {
             return (short) (getByte() & 0xFF);
         }
 
         @Override
-        public long skip(long total) throws IOException {
+        public long skip(long total) {
             int toSkip = (int) Math.min(byteBuffer.remaining(), total);
             byteBuffer.position(byteBuffer.position() + toSkip);
             return toSkip;
         }
 
         @Override
-        public int read(byte[] buffer, int byteCount) throws IOException {
+        public int read(byte[] buffer, int byteCount) {
             int toRead = Math.min(byteCount, byteBuffer.remaining());
             if (toRead == 0) {
                 return -1;
@@ -303,7 +303,7 @@ public class WebpHeaderParser{
         }
 
         @Override
-        public int getByte() throws IOException {
+        public int getByte() {
             if (byteBuffer.remaining() < 1) {
                 return -1;
             }

@@ -35,7 +35,7 @@ public class WebpDecoder implements GifDecoder {
     /** WebpImage instance */
     private WebpImage mWebPImage;
     private final GifDecoder.BitmapProvider mBitmapProvider;
-    private int mFramePointer;
+    private int mFramePointer = -1;
     private final int[] mFrameDurations;
     private final WebpFrameInfo[] mFrameInfos;
     private int sampleSize;

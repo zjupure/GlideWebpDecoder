@@ -8,7 +8,10 @@ import android.graphics.drawable.BitmapDrawable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Registry;
 import com.bumptech.glide.annotation.GlideModule;
+import com.bumptech.glide.integration.webp.decoder.AnimatedWebpBitmapDecoder;
+import com.bumptech.glide.integration.webp.decoder.ByteBufferAnimatedBitmapDecoder;
 import com.bumptech.glide.integration.webp.decoder.ByteBufferBitmapWebpDecoder;
+import com.bumptech.glide.integration.webp.decoder.StreamAnimatedBitmapDecoder;
 import com.bumptech.glide.integration.webp.decoder.StreamBitmapWebpDecoder;
 import com.bumptech.glide.integration.webp.decoder.WebpDownsampler;
 import com.bumptech.glide.integration.webp.decoder.WebpDrawableEncoder;
@@ -39,6 +42,7 @@ public class WebpGlideLibraryModule extends LibraryGlideModule {
         /* static webp decoders */
         WebpDownsampler webpDownsampler = new WebpDownsampler(registry.getImageHeaderParsers(),
                 resources.getDisplayMetrics(), bitmapPool, arrayPool);
+        AnimatedWebpBitmapDecoder bitmapDecoder = new AnimatedWebpBitmapDecoder(arrayPool, bitmapPool);
         ByteBufferBitmapWebpDecoder byteBufferBitmapDecoder = new ByteBufferBitmapWebpDecoder(webpDownsampler);
         StreamBitmapWebpDecoder streamBitmapDecoder = new StreamBitmapWebpDecoder(webpDownsampler, arrayPool);
         /* animate webp decoders */
@@ -59,6 +63,9 @@ public class WebpGlideLibraryModule extends LibraryGlideModule {
                         InputStream.class,
                         BitmapDrawable.class,
                         new BitmapDrawableDecoder<>(resources, streamBitmapDecoder))
+                /* Bitmaps for animated webp images*/
+                .prepend(Registry.BUCKET_BITMAP, ByteBuffer.class, Bitmap.class, new ByteBufferAnimatedBitmapDecoder(bitmapDecoder))
+                .prepend(Registry.BUCKET_BITMAP, InputStream.class, Bitmap.class, new StreamAnimatedBitmapDecoder(bitmapDecoder))
                 /* Animated webp images */
                 .prepend(ByteBuffer.class, WebpDrawable.class, byteBufferWebpDecoder)
                 .prepend(InputStream.class, WebpDrawable.class, new StreamWebpDecoder(byteBufferWebpDecoder, arrayPool))

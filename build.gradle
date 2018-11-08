@@ -1,10 +1,10 @@
 buildscript {
     repositories {
+        google()
         jcenter()
 //        maven {
 //            url "https://oss.sonatype.org/content/repositories/snapshots"
 //        }
-        google()
     }
 
     dependencies {
@@ -34,8 +34,8 @@ subprojects {
 subprojects { project ->
     repositories {
         mavenCentral()
-        jcenter()
         google()
+        jcenter()
     }
 
     apply plugin: 'checkstyle'
