@@ -19,7 +19,7 @@ import java.nio.ByteOrder;
  *
  * @author liuchun
  */
-public class WebpHeaderParser{
+public class WebpHeaderParser {
     public static final int MAX_WEBP_HEADER_SIZE = 21;
     // WebP-related
     // "RIFF"
@@ -76,10 +76,10 @@ public class WebpHeaderParser{
 
     public static boolean isStaticWebpType(WebpImageType imageType) {
         return imageType == WebpImageType.WEBP_SIMPLE ||
-           imageType == WebpImageType.WEBP_LOSSLESS ||
-           imageType == WebpImageType.WEBP_LOSSLESS_WITH_ALPHA ||
-           imageType == WebpImageType.WEBP_EXTENDED ||
-           imageType == WebpImageType.WEBP_EXTENDED_WITH_ALPHA;
+                imageType == WebpImageType.WEBP_LOSSLESS ||
+                imageType == WebpImageType.WEBP_LOSSLESS_WITH_ALPHA ||
+                imageType == WebpImageType.WEBP_EXTENDED ||
+                imageType == WebpImageType.WEBP_EXTENDED_WITH_ALPHA;
     }
 
 
@@ -175,19 +175,33 @@ public class WebpHeaderParser{
 
 
     public enum WebpImageType {
-        /** Simple Webp type (Lossy) without alpha and animation */
+        /**
+         * Simple Webp type (Lossy) without alpha and animation
+         */
         WEBP_SIMPLE(false, false),
-        /** Simple Webp type (Lossless) without alpha and animation */
+        /**
+         * Simple Webp type (Lossless) without alpha and animation
+         */
         WEBP_LOSSLESS(false, false),
-        /** Simple Webp type (Lossless) with alpha and withoud animation */
+        /**
+         * Simple Webp type (Lossless) with alpha and withoud animation
+         */
         WEBP_LOSSLESS_WITH_ALPHA(true, false),
-        /** Extended Webp type without alpha and animation */
+        /**
+         * Extended Webp type without alpha and animation
+         */
         WEBP_EXTENDED(false, false),
-        /** Extended Webp type with alpha and no animation */
+        /**
+         * Extended Webp type with alpha and no animation
+         */
         WEBP_EXTENDED_WITH_ALPHA(true, false),
-        /** Extened Webp type without alpha and has animation */
+        /**
+         * Extened Webp type without alpha and has animation
+         */
         WEBP_EXTENDED_ANIMATED(false, true),
-        /** Unrecognized type */
+        /**
+         * Unrecognized type
+         */
         NONE_WEBP(false, false);
 
         private final boolean hasAlpha;
@@ -211,9 +225,13 @@ public class WebpHeaderParser{
 
     private interface Reader {
         int getUInt16() throws IOException;
+
         short getUInt8() throws IOException;
+
         long skip(long total) throws IOException;
+
         int read(byte[] buffer, int byteCount) throws IOException;
+
         int getByte() throws IOException;
     }
 
@@ -242,14 +260,14 @@ public class WebpHeaderParser{
 
         @Override
         public long skip(long total) throws IOException {
-            int toSkip = (int)Math.min(offset + size - pos, total);
+            int toSkip = (int) Math.min(offset + size - pos, total);
             pos += toSkip;
             return toSkip;
         }
 
         @Override
         public int read(byte[] buffer, int byteCount) throws IOException {
-            int toRead = (int)Math.min(offset + size - pos, byteCount);
+            int toRead = (int) Math.min(offset + size - pos, byteCount);
             if (toRead == 0) {
                 return -1;
             }
@@ -276,24 +294,24 @@ public class WebpHeaderParser{
         }
 
         @Override
-        public int getUInt16() {
+        public int getUInt16() throws IOException {
             return (getByte() << 8 & 0xFF00) | (getByte() & 0xFF);
         }
 
         @Override
-        public short getUInt8() {
+        public short getUInt8() throws IOException {
             return (short) (getByte() & 0xFF);
         }
 
         @Override
-        public long skip(long total) {
+        public long skip(long total) throws IOException {
             int toSkip = (int) Math.min(byteBuffer.remaining(), total);
             byteBuffer.position(byteBuffer.position() + toSkip);
             return toSkip;
         }
 
         @Override
-        public int read(byte[] buffer, int byteCount) {
+        public int read(byte[] buffer, int byteCount) throws IOException {
             int toRead = Math.min(byteCount, byteBuffer.remaining());
             if (toRead == 0) {
                 return -1;
@@ -303,7 +321,7 @@ public class WebpHeaderParser{
         }
 
         @Override
-        public int getByte() {
+        public int getByte() throws IOException {
             if (byteBuffer.remaining() < 1) {
                 return -1;
             }
@@ -313,6 +331,7 @@ public class WebpHeaderParser{
 
     private static final class StreamReader implements Reader {
         private final InputStream is;
+
         // Motorola / big endian byte order.
         StreamReader(InputStream is) {
             this.is = is;

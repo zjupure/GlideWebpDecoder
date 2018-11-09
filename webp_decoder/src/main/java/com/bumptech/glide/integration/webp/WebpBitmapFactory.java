@@ -20,7 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 接口和{@link BitmapFactory}保持一致
+ * The Same API with android framework {@link BitmapFactory} that can decode
+ * static webp images to bitmap
  *
  * @author liuchun
  */

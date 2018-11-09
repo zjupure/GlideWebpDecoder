@@ -1,6 +1,7 @@
 package com.bumptech.glide.integration.webp.decoder;
 
 import android.graphics.Bitmap;
+import android.support.annotation.NonNull;
 
 import com.bumptech.glide.integration.webp.WebpHeaderParser;
 import com.bumptech.glide.integration.webp.WebpImage;
@@ -17,8 +18,9 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
- * author: liuchun
- * date: 2018/11/8
+ * Decode the animated webp image and obtain the first frame bitmap
+ *
+ * @author liuchun
  */
 public class AnimatedWebpBitmapDecoder {
     public static final Option<Boolean> DISABLE_BITMAP = Option.memory(
@@ -34,7 +36,7 @@ public class AnimatedWebpBitmapDecoder {
         mProvider = new GifBitmapProvider(bitmapPool, byteArrayPool);
     }
 
-    public boolean handles(InputStream source, Options options) throws IOException {
+    public boolean handles(InputStream source, @NonNull Options options) throws IOException {
         if (options.get(DISABLE_BITMAP)) {
             return false;
         }
@@ -42,7 +44,7 @@ public class AnimatedWebpBitmapDecoder {
         return WebpHeaderParser.isAnimatedWebpType(webpType);
     }
 
-    public boolean handles(ByteBuffer source, Options options) throws IOException {
+    public boolean handles(ByteBuffer source, @NonNull Options options) throws IOException {
         if (options.get(DISABLE_BITMAP)) {
             return false;
         }
@@ -70,8 +72,8 @@ public class AnimatedWebpBitmapDecoder {
 
         int sampleSize = Utils.getSampleSize(webp.getWidth(), webp.getHeight(), width, height);
         WebpDecoder webpDecoder = new WebpDecoder(mProvider, webp, source, sampleSize);
-        webpDecoder.advance();
         try {
+            webpDecoder.advance();
             Bitmap firstFrame = webpDecoder.getNextFrame();
             return BitmapResource.obtain(firstFrame, mBitmapPool);
         } finally {

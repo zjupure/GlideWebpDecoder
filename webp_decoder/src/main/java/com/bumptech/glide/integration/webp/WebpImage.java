@@ -10,7 +10,7 @@ import static com.bumptech.glide.integration.webp.WebpFrame.FRAME_DURATION_MS_FO
 import static com.bumptech.glide.integration.webp.WebpFrame.MIN_FRAME_DURATION_MS;
 
 /**
- *  a WebpImage container whose encoded data held by native ptr
+ *  A WebpImage container whose encoded data held by native ptr
  *
  *  @author liuchun
  */

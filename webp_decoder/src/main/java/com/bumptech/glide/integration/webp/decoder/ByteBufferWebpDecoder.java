@@ -28,15 +28,12 @@ import java.nio.ByteBuffer;
  * @author liuchun
  */
 public class ByteBufferWebpDecoder implements ResourceDecoder<ByteBuffer, WebpDrawable> {
-    private static final String TAG = "BufferWebpDecoder";
-
     public static final Option<Boolean> DISABLE_ANIMATION = Option.memory(
             "com.bumptech.glide.integration.webp.decoder.ByteBufferWebpDecoder.DisableAnimation", false);
 
     private final Context mContext;
     private final BitmapPool mBitmapPool;
     private final GifBitmapProvider mProvider;
-
 
     public ByteBufferWebpDecoder(Context context) {
         this(context, Glide.get(context).getArrayPool(),

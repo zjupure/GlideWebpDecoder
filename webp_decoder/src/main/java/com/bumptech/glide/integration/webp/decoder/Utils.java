@@ -7,8 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * author: liuchun
- * date: 2018/11/8
+ * @author liuchun
  */
 class Utils {
     private static final String TAG = "Utils";

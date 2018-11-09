@@ -39,7 +39,7 @@ import static com.bumptech.glide.load.resource.bitmap.Downsampler.FIX_BITMAP_SIZ
 import static com.bumptech.glide.load.resource.bitmap.Downsampler.ALLOW_HARDWARE_CONFIG;
 
 /**
- * code copy from {@link Downsampler} dut to it is final that cannot be extended
+ * code copy from {@link Downsampler} due to it is final that cannot be inherited
  *
  * @author liuchun
  */
@@ -48,7 +48,6 @@ public final class WebpDownsampler {
 
     public static final Option<Boolean> DISABLE_DECODER = Option.memory(
             "com.bumptech.glide.integration.webp.decoder.WebpDownsampler.DisableDecoder", false);
-
 
     private static final Downsampler.DecodeCallbacks EMPTY_CALLBACKS = new Downsampler.DecodeCallbacks() {
         @Override

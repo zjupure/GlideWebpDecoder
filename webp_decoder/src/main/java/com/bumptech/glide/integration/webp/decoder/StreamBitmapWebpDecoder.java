@@ -21,7 +21,6 @@ public class StreamBitmapWebpDecoder implements ResourceDecoder<InputStream, Bit
     private final WebpDownsampler downsampler;
     private final ArrayPool byteArrayPool;
 
-
     public StreamBitmapWebpDecoder(WebpDownsampler downsampler, ArrayPool byteArrayPool) {
         this.downsampler = downsampler;
         this.byteArrayPool = byteArrayPool;

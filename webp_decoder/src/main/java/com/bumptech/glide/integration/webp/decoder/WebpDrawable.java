@@ -22,7 +22,7 @@ import com.bumptech.glide.util.Preconditions;
 import java.nio.ByteBuffer;
 
 /**
- *
+ * A Drawable that can display animated webp with multiple frame bitmaps
  *
  * @author liuchun
  */

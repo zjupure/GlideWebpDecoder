@@ -23,12 +23,8 @@ import java.nio.ByteBuffer;
  * @author liuchun
  */
 public class StreamWebpDecoder implements ResourceDecoder<InputStream, WebpDrawable> {
-
-    private final static String TAG = "StreamWebpDecoder";
-
     public static final Option<Boolean> DISABLE_ANIMATION = Option.memory(
             "com.bumptech.glide.integration.webp.decoder.StreamWebpDecoder.DisableAnimation", false);
-
 
     private final ResourceDecoder<ByteBuffer, WebpDrawable> byteBufferDecoder;
     private final ArrayPool byteArrayPool;
