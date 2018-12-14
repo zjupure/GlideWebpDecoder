@@ -111,12 +111,14 @@ FrameSequence_gif::FrameSequence_gif(Stream* stream) :
     }
 #endif
 
-    if (mGif->SColorMap) {
+    const ColorMapObject* cmap = mGif->SColorMap;
+    if (cmap) {
         // calculate bg color
         GraphicsControlBlock gcb;
         DGifSavedExtensionToGCB(mGif, 0, &gcb);
-        if (gcb.TransparentColor == NO_TRANSPARENT_COLOR) {
-            mBgColor = gifColorToColor8888(mGif->SColorMap->Colors[mGif->SBackGroundColor]);
+        if (gcb.TransparentColor == NO_TRANSPARENT_COLOR
+                && mGif->SBackGroundColor < cmap->ColorCount) {
+            mBgColor = gifColorToColor8888(cmap->Colors[mGif->SBackGroundColor]);
         }
     }
 }
@@ -358,4 +360,3 @@ static RegistryEntry gEntry = {
         acceptsBuffers,
 };
 static Registry gRegister(gEntry);
-
