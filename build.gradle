@@ -33,9 +33,9 @@ subprojects {
 
 subprojects { project ->
     repositories {
-        mavenCentral()
         google()
         jcenter()
+        mavenCentral()
     }
 
     apply plugin: 'checkstyle'
