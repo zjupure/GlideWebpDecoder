@@ -10,7 +10,9 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
 import android.support.annotation.VisibleForTesting;
+import android.support.graphics.drawable.Animatable2Compat;
 import android.view.Gravity;
 
 import com.bumptech.glide.Glide;
@@ -20,13 +22,16 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.util.Preconditions;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Drawable that can display animated webp with multiple frame bitmaps
  *
  * @author liuchun
  */
-public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallback, Animatable {
+public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallback,
+        Animatable, Animatable2Compat {
     /**
      * A constant indicating that an animated drawable should loop continuously.
      */
@@ -37,6 +42,8 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
      * present.
      */
     public static final int LOOP_INTRINSIC = 0;
+
+    private static final int GRAVITY = Gravity.FILL;
 
     private final WebpState state;
     /**
@@ -70,6 +77,11 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
     private boolean applyGravity;
     private Paint paint;
     private Rect destRect;
+
+    /**
+     * Callbacks to notify loop completion of a webp animation, where the loop count is explicitly specified.
+     */
+    private List<AnimationCallback> animationCallbacks;
 
     public WebpDrawable(Context context, GifDecoder gifDecoder, BitmapPool bitmapPool,
            Transformation<Bitmap> frameTransformation, int targetFrameWidth, int targetFrameHeight,
@@ -205,7 +217,7 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
         }
 
         if(applyGravity) {
-            Gravity.apply(WebpState.GRAVITY, getIntrinsicWidth(), getIntrinsicHeight(), getBounds(), getDestRect());
+            Gravity.apply(GRAVITY, getIntrinsicWidth(), getIntrinsicHeight(), getBounds(), getDestRect());
             applyGravity = false;
         }
 
@@ -241,19 +253,37 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
         return PixelFormat.TRANSPARENT;
     }
 
+    // See #1087.
+    private Callback findCallback() {
+        Callback callback = getCallback();
+        while (callback instanceof Drawable) {
+            callback = ((Drawable) callback).getCallback();
+        }
+        return callback;
+    }
+
     public void onFrameReady() {
-        if(getCallback() == null) {
+        if(findCallback() == null) {
             stop();
             invalidateSelf();
             return;
         }
         invalidateSelf();
         if(getFrameIndex() == getFrameCount() - 1) {
-            ++this.loopCount;
+            loopCount++;
         }
 
         if(maxLoopCount != LOOP_FOREVER && loopCount >= maxLoopCount) {
+            notifyAnimationEndToListeners();
             stop();
+        }
+    }
+
+    private void notifyAnimationEndToListeners() {
+        if (animationCallbacks != null) {
+            for (int i = 0, size = animationCallbacks.size(); i < size; i++) {
+                animationCallbacks.get(i).onAnimationEnd(this);
+            }
         }
     }
 
@@ -283,8 +313,43 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
         }
     }
 
+    /**
+     * Register callback to listen to WebpDrawable animation end event after specific loop count
+     * set by {@link WebpDrawable#setLoopCount(int)}.
+     *
+     * Note: This will only be called if the Gif stop because it reaches the loop count. Unregister
+     * this in onLoadCleared to avoid potential memory leak.
+     * @see WebpDrawable#unregisterAnimationCallback(AnimationCallback).
+     *
+     * @param animationCallback Animation callback {@link Animatable2Compat.AnimationCallback}.
+     */
+    @Override
+    public void registerAnimationCallback(@NonNull AnimationCallback animationCallback) {
+        if (animationCallback == null) {
+            return;
+        }
+        if (animationCallbacks == null) {
+            animationCallbacks = new ArrayList<>();
+        }
+        animationCallbacks.add(animationCallback);
+    }
+
+    @Override
+    public boolean unregisterAnimationCallback(@NonNull AnimationCallback animationCallback) {
+        if (animationCallbacks == null || animationCallback == null) {
+            return false;
+        }
+        return animationCallbacks.remove(animationCallback);
+    }
+
+    @Override
+    public void clearAnimationCallbacks() {
+        if (animationCallbacks != null) {
+            animationCallbacks.clear();
+        }
+    }
+
     static class WebpState extends ConstantState {
-        static final int GRAVITY = Gravity.FILL;
         final BitmapPool bitmapPool;
         final WebpFrameLoader frameLoader;
 
