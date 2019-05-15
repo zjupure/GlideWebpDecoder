@@ -67,7 +67,8 @@ public class ByteBufferWebpDecoder implements ResourceDecoder<ByteBuffer, WebpDr
         WebpImage webp = WebpImage.create(data);
 
         int sampleSize = Utils.getSampleSize(webp.getWidth(), webp.getHeight(), width, height);
-        WebpDecoder webpDecoder = new WebpDecoder(mProvider, webp, source, sampleSize);
+        WebpFrameCacheStrategy cacheStrategy = options.get(WebpFrameLoader.FRAME_CACHE_STRATEGY);
+        WebpDecoder webpDecoder = new WebpDecoder(mProvider, webp, source, sampleSize, cacheStrategy);
         webpDecoder.advance();
         Bitmap firstFrame = webpDecoder.getNextFrame();
         if (firstFrame == null) {

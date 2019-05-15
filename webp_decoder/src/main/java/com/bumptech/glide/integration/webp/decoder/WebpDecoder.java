@@ -43,12 +43,19 @@ public class WebpDecoder implements GifDecoder {
     private int downsampledWidth;
     private final Paint mTransparentFillPaint;
 
+    private WebpFrameCacheStrategy mCacheStrategy;
+
     private Bitmap.Config mBitmapConfig = Bitmap.Config.ARGB_8888;
     // 动画每一帧渲染后的Bitmap缓存
     private final LruCache<Integer, Bitmap> mFrameBitmapCache;
 
     public WebpDecoder(GifDecoder.BitmapProvider provider, WebpImage webPImage, ByteBuffer rawData,
                        int sampleSize) {
+        this(provider, webPImage, rawData, sampleSize, WebpFrameCacheStrategy.NONE);
+    }
+
+    public WebpDecoder(GifDecoder.BitmapProvider provider, WebpImage webPImage, ByteBuffer rawData,
+                       int sampleSize, WebpFrameCacheStrategy cacheStrategy) {
         mBitmapProvider = provider;
         mWebPImage = webPImage;
         mFrameDurations = webPImage.getFrameDurations();
@@ -59,14 +66,20 @@ public class WebpDecoder implements GifDecoder {
                 Log.d(TAG, "mFrameInfos: " + mFrameInfos[i].toString());
             }
         }
+        mCacheStrategy = cacheStrategy;
 
         mTransparentFillPaint = new Paint();
         mTransparentFillPaint.setColor(Color.TRANSPARENT);
         mTransparentFillPaint.setStyle(Paint.Style.FILL);
         mTransparentFillPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 
-
-        mFrameBitmapCache = new LruCache<Integer, Bitmap>(MAX_FRAME_BITMAP_CACHE_SIZE) {
+        int maxCacheSize = MAX_FRAME_BITMAP_CACHE_SIZE;
+        if (mCacheStrategy.cacheAll()) {
+            maxCacheSize = webPImage.getFrameCount();
+        } else {
+            maxCacheSize = Math.max(maxCacheSize, mCacheStrategy.getCacheSize());
+        }
+        mFrameBitmapCache = new LruCache<Integer, Bitmap>(maxCacheSize) {
             @Override
             protected void entryRemoved(boolean evicted, Integer key, Bitmap oldValue, Bitmap newValue) {
                 // Return the cached frame bitmap to the provider
@@ -77,6 +90,10 @@ public class WebpDecoder implements GifDecoder {
         };
 
         setData(new GifHeader(), rawData, sampleSize);
+    }
+
+    public WebpFrameCacheStrategy getCacheStrategy() {
+        return mCacheStrategy;
     }
 
     @Override
@@ -178,6 +195,16 @@ public class WebpDecoder implements GifDecoder {
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 
+        if (!mCacheStrategy.noCache()) {
+            Bitmap cache = mFrameBitmapCache.get(frameNumber);
+            if (cache != null) {
+                // hit from memory cache
+                Log.d(TAG, "hit frame bitmap from memory cache, frameNumber=" + frameNumber);
+                canvas.drawBitmap(cache, 0, 0, null);
+                return bitmap;
+            }
+        }
+
         int nextIndex;
         // if blending is required, prepare the canvas with the nearest cached frame
         if (!isKeyFrame(frameNumber)) {
@@ -187,9 +214,9 @@ public class WebpDecoder implements GifDecoder {
             nextIndex = frameNumber;
         }
 
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
+        //if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "frameNumber=" + frameNumber + ", nextIndex=" + nextIndex);
-        }
+        //}
 
         for (int index = nextIndex; index < frameNumber; index++) {
             WebpFrameInfo frameInfo = mFrameInfos[index];
@@ -218,10 +245,10 @@ public class WebpDecoder implements GifDecoder {
         // Finally, we render the current frame. We don't dispose it.
         renderFrame(frameNumber, canvas);
 
-        if (Log.isLoggable(TAG, Log.DEBUG)) {
+        //if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "renderFrame, index=" + frameNumber + ", blend=" + frameInfo.blendPreviousFrame
                     + ", dispose=" + frameInfo.disposeBackgroundColor);
-        }
+        //}
         // Then put the rendered frame into the BitmapCache
         cacheFrameBitmap(frameNumber, bitmap);
 

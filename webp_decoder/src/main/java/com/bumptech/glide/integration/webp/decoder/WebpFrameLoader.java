@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.bumptech.glide.Glide;
@@ -12,6 +13,7 @@ import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.gifdecoder.GifDecoder;
 import com.bumptech.glide.load.Key;
+import com.bumptech.glide.load.Option;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -23,6 +25,7 @@ import com.bumptech.glide.util.Preconditions;
 import com.bumptech.glide.util.Util;
 
 import java.nio.ByteBuffer;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +36,11 @@ import java.util.List;
  */
 public class WebpFrameLoader {
 
-    private final GifDecoder gifDecoder;
+    public static final Option<WebpFrameCacheStrategy> FRAME_CACHE_STRATEGY = Option.memory(
+            "com.bumptech.glide.integration.webp.decoder.WebpFrameLoader.CacheStrategy", WebpFrameCacheStrategy.NONE);
+
+
+    private final WebpDecoder webpDecoder;
     private final Handler handler;
     private final List<FrameCallback> callbacks;
     final RequestManager requestManager;
@@ -56,12 +63,12 @@ public class WebpFrameLoader {
         void onFrameReady();
     }
 
-    public WebpFrameLoader(Glide glide, GifDecoder gifDecoder,
+    public WebpFrameLoader(Glide glide, WebpDecoder webpDecoder,
                            int width, int height,
                            Transformation<Bitmap> transformation, Bitmap firstFrame) {
         this(glide.getBitmapPool(),
                 Glide.with(glide.getContext()),
-                gifDecoder,
+                webpDecoder,
                 (Handler) null,
                 getRequestBuilder(Glide.with(glide.getContext()), width, height),
                 transformation,
@@ -69,7 +76,7 @@ public class WebpFrameLoader {
     }
 
     WebpFrameLoader(BitmapPool bitmapPool, RequestManager requestManager,
-                    GifDecoder gifDecoder, Handler handler,
+                    WebpDecoder webpDecoder, Handler handler,
                     RequestBuilder<Bitmap> requestBuilder,
                     Transformation<Bitmap> transformation, Bitmap firstFrame) {
         this.callbacks = new ArrayList<>();
@@ -84,7 +91,7 @@ public class WebpFrameLoader {
         this.bitmapPool = bitmapPool;
         this.handler = handler;
         this.requestBuilder = requestBuilder;
-        this.gifDecoder = gifDecoder;
+        this.webpDecoder = webpDecoder;
         this.setFrameTransformation(transformation, firstFrame);
     }
 
@@ -134,7 +141,7 @@ public class WebpFrameLoader {
     }
 
     int getSize() {
-        return gifDecoder.getByteSize() + getFrameSize();
+        return webpDecoder.getByteSize() + getFrameSize();
     }
 
     int getCurrentIndex() {
@@ -147,15 +154,15 @@ public class WebpFrameLoader {
     }
 
     ByteBuffer getBuffer() {
-        return gifDecoder.getData().asReadOnlyBuffer();
+        return webpDecoder.getData().asReadOnlyBuffer();
     }
 
     int getFrameCount() {
-        return gifDecoder.getFrameCount();
+        return webpDecoder.getFrameCount();
     }
 
     int getLoopCount() {
-        return gifDecoder.getTotalIterationCount();
+        return webpDecoder.getTotalIterationCount();
     }
 
     private void start() {
@@ -189,7 +196,7 @@ public class WebpFrameLoader {
             pendingTarget = null;
         }
 
-        gifDecoder.clear();
+        webpDecoder.clear();
         isCleared = true;
     }
 
@@ -205,7 +212,7 @@ public class WebpFrameLoader {
         if (startFromFirstFrame) {
             Preconditions.checkArgument(
                     pendingTarget == null, "Pending target must be null when starting from the first frame");
-            gifDecoder.resetFrameIndex();
+            webpDecoder.resetFrameIndex();
             startFromFirstFrame = false;
         }
 
@@ -220,12 +227,17 @@ public class WebpFrameLoader {
 
         // Get the delay before incrementing the pointer because the delay indicates the amount of time
         // we want to spend on the current frame.
-        int delay = gifDecoder.getNextDelay();
+        int delay = webpDecoder.getNextDelay();
         long targetTime = SystemClock.uptimeMillis() + delay;
 
-        gifDecoder.advance();
-        next = new DelayTarget(handler, gifDecoder.getCurrentFrameIndex(), targetTime);
-        requestBuilder.apply(RequestOptions.signatureOf(getFrameSignature())).load(gifDecoder).into(next);
+        webpDecoder.advance();
+        int frameIndex = webpDecoder.getCurrentFrameIndex();
+        next = new DelayTarget(handler, frameIndex, targetTime);
+
+        WebpFrameCacheStrategy cacheStrategy = webpDecoder.getCacheStrategy();
+        RequestOptions options = RequestOptions.signatureOf(getFrameSignature(frameIndex))
+                .skipMemoryCache(cacheStrategy.noCache());
+        requestBuilder.apply(options).load(webpDecoder).into(next);
     }
 
     private void recycleFirstFrame() {
@@ -339,10 +351,44 @@ public class WebpFrameLoader {
                         .override(width, height));
     }
 
-    private static Key getFrameSignature() {
+    private Key getFrameSignature(int frameIndex) {
         // Some devices seem to have crypto bugs that throw exceptions when you create a new UUID.
         // See #1510.
-        return new ObjectKey(Math.random());
+        //return new ObjectKey(Math.random());
+        return new WebpFrameCacheKey(new ObjectKey(webpDecoder), frameIndex);
+    }
+
+    private static class WebpFrameCacheKey implements Key {
+
+        private final Key sourceKey;
+        private final int frameIndex;
+
+        WebpFrameCacheKey(Key sourceKey, int frameIndex) {
+            this.sourceKey = sourceKey;
+            this.frameIndex = frameIndex;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof WebpFrameCacheKey) {
+                WebpFrameCacheKey other = (WebpFrameCacheKey) o;
+                return sourceKey.equals(other.sourceKey) && frameIndex == other.frameIndex;
+            }
+            return false;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = sourceKey.hashCode();
+            return 31 * result + frameIndex;
+        }
+
+        @Override
+        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+            byte[] data = ByteBuffer.allocate(12).putInt(frameIndex).array();
+            messageDigest.update(data);
+            sourceKey.updateDiskCacheKey(messageDigest);
+        }
     }
 
     interface OnEveryFrameListener {

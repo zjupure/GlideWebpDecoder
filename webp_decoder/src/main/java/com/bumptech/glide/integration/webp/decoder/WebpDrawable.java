@@ -83,14 +83,14 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
      */
     private List<AnimationCallback> animationCallbacks;
 
-    public WebpDrawable(Context context, GifDecoder gifDecoder, BitmapPool bitmapPool,
+    public WebpDrawable(Context context, WebpDecoder webDecoder, BitmapPool bitmapPool,
            Transformation<Bitmap> frameTransformation, int targetFrameWidth, int targetFrameHeight,
                         Bitmap firstFrame) {
         this(
             new WebpState(bitmapPool,
                 new WebpFrameLoader(
                         Glide.get(context),
-                        gifDecoder,
+                        webDecoder,
                         targetFrameWidth,
                         targetFrameHeight,
                         frameTransformation,
