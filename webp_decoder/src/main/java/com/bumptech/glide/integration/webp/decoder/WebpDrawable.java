@@ -313,6 +313,14 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
         }
     }
 
+    public int getLoopCount() {
+        return maxLoopCount;
+    }
+
+    public int getIntrinsicLoopCount() {
+        return state.frameLoader.getLoopCount();
+    }
+
     /**
      * Register callback to listen to WebpDrawable animation end event after specific loop count
      * set by {@link WebpDrawable#setLoopCount(int)}.
