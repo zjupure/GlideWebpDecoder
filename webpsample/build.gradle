@@ -15,6 +15,13 @@ dependencies {
     implementation "com.android.support:support-fragment:${ANDROID_SUPPORT_VERSION}"
     implementation "com.android.support:animated-vector-drawable:${ANDROID_SUPPORT_VERSION}"
     implementation "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
+
+    implementation "com.facebook.fresco:fresco:${FRESCO_VERSION}"
+    // 支持 GIF 动图，需要添加
+    implementation "com.facebook.fresco:animated-gif:${FRESCO_VERSION}"
+    // 支持 WebP （静态图+动图），需要添加
+    implementation "com.facebook.fresco:animated-webp:${FRESCO_VERSION}"
+    implementation "com.facebook.fresco:webpsupport:${FRESCO_VERSION}"
 }
 
 android {

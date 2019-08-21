@@ -8,12 +8,15 @@ public final class WebpFrameCacheStrategy {
 
     public static final WebpFrameCacheStrategy NONE = new Builder().noCache().build();
 
+    public static final WebpFrameCacheStrategy AUTO = new Builder().cacheAuto().build();
+
     public static final WebpFrameCacheStrategy ALL = new Builder().cacheAll().build();
 
     public enum CacheControl {
         CACHE_NONE,
         CACHE_LIMITED,
-        CACHE_ALL
+        CACHE_AUTO,
+        CACHE_ALL,
     }
 
     private CacheControl mCacheStrategy;
@@ -30,6 +33,10 @@ public final class WebpFrameCacheStrategy {
 
     public boolean noCache() {
         return mCacheStrategy == CacheControl.CACHE_NONE;
+    }
+
+    public boolean cacheAuto() {
+        return mCacheStrategy == CacheControl.CACHE_AUTO;
     }
 
     public boolean cacheAll() {
@@ -54,6 +61,11 @@ public final class WebpFrameCacheStrategy {
             return this;
         }
 
+        public Builder cacheAuto() {
+            this.cacheControl = CacheControl.CACHE_AUTO;
+            return this;
+        }
+
         public Builder cacheLimited() {
             this.cacheControl = CacheControl.CACHE_LIMITED;
             return this;
@@ -70,6 +82,8 @@ public final class WebpFrameCacheStrategy {
                 this.cacheControl = CacheControl.CACHE_NONE;
             } else if (cacheSize == Integer.MAX_VALUE) {
                 this.cacheControl = CacheControl.CACHE_ALL;
+            } else {
+                this.cacheControl = CacheControl.CACHE_LIMITED;
             }
             return this;
         }

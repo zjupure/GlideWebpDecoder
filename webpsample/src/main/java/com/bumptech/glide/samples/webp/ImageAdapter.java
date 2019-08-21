@@ -2,10 +2,7 @@ package com.bumptech.glide.samples.webp;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +12,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.integration.webp.decoder.WebpDrawable;
 import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation;
-import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.Transformation;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.request.ImageRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +65,10 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
         }
 
         String url = mImageUrls.get(position);
-        if (mBitmapTrans != null) {
+        if (holder.imageView instanceof SimpleDraweeView) {
+            SimpleDraweeView view = (SimpleDraweeView)(holder.imageView) ;
+            loadImageWithFresco(view, url);
+        } else if (mBitmapTrans != null) {
             loadImageWithTransformation(holder.imageView, url);
         } else {
             loadImage(holder.imageView, url);
@@ -82,12 +82,24 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
         return mImageUrls.size();
     }
 
+    private void loadImageWithFresco(SimpleDraweeView draweeView, String url) {
+        ImageRequest imageRequest = ImageRequest.fromUri(url);
+        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                .setImageRequest(imageRequest)
+                .setAutoPlayAnimations(true)
+                .setOldController(draweeView.getController())
+                .build();
+        draweeView.setController(controller);
+    }
+
+
     private void loadImage(ImageView imageView, String url) {
         GlideApp.with(mContext)
                 //.asBitmap()
                 .load(url)
                 .placeholder(R.drawable.image_loading)
                 .error(R.drawable.image_error)
+                //.set(WebpFrameLoader.FRAME_CACHE_STRATEGY, WebpFrameCacheStrategy.AUTO)
                 .into(imageView);
     }
 
@@ -100,6 +112,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
                 .error(R.drawable.image_error)
                 .optionalTransform(mBitmapTrans)
                 .optionalTransform(WebpDrawable.class, new WebpDrawableTransformation(mBitmapTrans))
+                //.set(WebpFrameLoader.FRAME_CACHE_STRATEGY, WebpFrameCacheStrategy.AUTO)
                 .into(imageView);
     }
 

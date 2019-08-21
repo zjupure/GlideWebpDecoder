@@ -11,7 +11,6 @@ import android.support.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.gifdecoder.GifDecoder;
 import com.bumptech.glide.load.Key;
 import com.bumptech.glide.load.Option;
 import com.bumptech.glide.load.Transformation;
@@ -37,8 +36,7 @@ import java.util.List;
 public class WebpFrameLoader {
 
     public static final Option<WebpFrameCacheStrategy> FRAME_CACHE_STRATEGY = Option.memory(
-            "com.bumptech.glide.integration.webp.decoder.WebpFrameLoader.CacheStrategy", WebpFrameCacheStrategy.NONE);
-
+            "com.bumptech.glide.integration.webp.decoder.WebpFrameLoader.CacheStrategy", WebpFrameCacheStrategy.AUTO);
 
     private final WebpDecoder webpDecoder;
     private final Handler handler;
