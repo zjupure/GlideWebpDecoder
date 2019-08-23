@@ -1,4 +1,4 @@
-# libwebp version 1.0.1, https://github.com/webmproject/libwebp/tree/master
+# libwebp version 1.0.3, https://github.com/webmproject/libwebp/tree/master
 LOCAL_PATH := $(call my-dir)
 
 WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED
