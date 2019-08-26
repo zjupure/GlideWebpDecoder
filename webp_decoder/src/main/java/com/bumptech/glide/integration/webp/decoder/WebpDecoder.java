@@ -199,7 +199,9 @@ public class WebpDecoder implements GifDecoder {
             Bitmap cache = mFrameBitmapCache.get(frameNumber);
             if (cache != null) {
                 // hit from memory cache
-                Log.d(TAG, "hit frame bitmap from memory cache, frameNumber=" + frameNumber);
+                if (Log.isLoggable(TAG, Log.DEBUG)) {
+                    Log.d(TAG, "hit frame bitmap from memory cache, frameNumber=" + frameNumber);
+                }
                 canvas.drawBitmap(cache, 0, 0, null);
                 return bitmap;
             }
@@ -214,9 +216,9 @@ public class WebpDecoder implements GifDecoder {
             nextIndex = frameNumber;
         }
 
-        //if (Log.isLoggable(TAG, Log.DEBUG)) {
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "frameNumber=" + frameNumber + ", nextIndex=" + nextIndex);
-        //}
+        }
 
         for (int index = nextIndex; index < frameNumber; index++) {
             WebpFrameInfo frameInfo = mFrameInfos[index];
@@ -245,10 +247,10 @@ public class WebpDecoder implements GifDecoder {
         // Finally, we render the current frame. We don't dispose it.
         renderFrame(frameNumber, canvas);
 
-        //if (Log.isLoggable(TAG, Log.DEBUG)) {
+        if (Log.isLoggable(TAG, Log.DEBUG)) {
             Log.d(TAG, "renderFrame, index=" + frameNumber + ", blend=" + frameInfo.blendPreviousFrame
                     + ", dispose=" + frameInfo.disposeBackgroundColor);
-        //}
+        }
         // Then put the rendered frame into the BitmapCache
         cacheFrameBitmap(frameNumber, bitmap);
 
