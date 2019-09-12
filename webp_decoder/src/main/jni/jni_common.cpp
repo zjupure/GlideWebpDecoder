@@ -220,4 +220,4 @@ jmethodID getStaticMethodIdOrThrow(
     return pEnv->GetStaticMethodID(clazz, szMethodName, szSig);
 }
 
-} // namespace facebook
+} // namespace glide

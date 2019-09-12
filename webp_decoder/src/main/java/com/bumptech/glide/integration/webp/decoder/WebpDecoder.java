@@ -11,9 +11,9 @@ import android.util.LruCache;
 
 import com.bumptech.glide.gifdecoder.GifDecoder;
 import com.bumptech.glide.gifdecoder.GifHeader;
+import com.bumptech.glide.integration.webp.WebpFrame;
 import com.bumptech.glide.integration.webp.WebpFrameInfo;
 import com.bumptech.glide.integration.webp.WebpImage;
-import com.bumptech.glide.integration.webp.WebpFrame;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -258,7 +258,6 @@ public class WebpDecoder implements GifDecoder {
     }
 
     private void renderFrame(int frameNumber, Canvas canvas) {
-
         WebpFrameInfo frameInfo = mFrameInfos[frameNumber];
 
         int frameWidth = frameInfo.width / sampleSize;
@@ -273,6 +272,8 @@ public class WebpDecoder implements GifDecoder {
             webpFrame.renderFrame(frameWidth, frameHeight, frameBitmap);
             canvas.drawBitmap(frameBitmap, xOffset, yOffset, null);
             mBitmapProvider.release(frameBitmap);
+        } catch (IllegalStateException e) {
+            Log.e(TAG, "Rendering of frame failed. Frame number: " + frameNumber);
         } finally {
             webpFrame.dispose();
         }

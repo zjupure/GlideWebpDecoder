@@ -52,6 +52,7 @@ public class MainActivity extends Activity {
     private static final String[] ANIM_WEBP = {
             //"https://raw.githubusercontent.com/1290846731/RecordMySelf/master/chect.webp",
             "https://www.gstatic.com/webp/animated/1.webp",
+            "https://qidian.qpic.cn/qidian_common/349573/a36f7d7d8a5e15e1cf3c32d05109467a/0",
             "https://mathiasbynens.be/demo/animated-webp-supported.webp",
             "https://isparta.github.io/compare-webp/image/gif_webp/webp/2.webp",
             "http://osscdn.ixingtu.com/musi_file/20181108/a20540641eb7de9a8bf186261a8ccf57.webp",

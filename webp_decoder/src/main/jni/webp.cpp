@@ -379,7 +379,6 @@ void WebPFrameNative_releaseRef(JNIEnv* pEnv, jobject thiz, WebPFrame* p) {
         pEnv->ExceptionClear();
     }
 
-    //__android_log_print(ANDROID_LOG_DEBUG, "GLIDE_WEBP", "MonitorEnter called in WebPFrameNative_releaseRef");
     pEnv->MonitorEnter(thiz);
     p->refCount--;
     if (p->refCount == 0) {
@@ -509,6 +508,7 @@ void WebPFrame_nativeRenderFrame(
     }
 
     if (bitmapInfo.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+        spNativeWebPFrame.reset();
         throwIllegalStateException(pEnv, "Wrong color format");
         return;
     }
@@ -525,12 +525,14 @@ void WebPFrame_nativeRenderFrame(
 
     ret = (WebPGetFeatures(pPayload , payloadSize, &config.input) == VP8_STATUS_OK);
     if (!ret) {
+        spNativeWebPFrame.reset();
         throwIllegalStateException(pEnv, "WebPGetFeatures failed");
         return;
     }
 
     uint8_t* pixels;
     if (AndroidBitmap_lockPixels(pEnv, bitmap, (void**) &pixels) != ANDROID_BITMAP_RESULT_SUCCESS) {
+        spNativeWebPFrame.reset();
         throwIllegalStateException(pEnv, "Bad bitmap");
         return;
     }
@@ -553,7 +555,8 @@ void WebPFrame_nativeRenderFrame(
     if (ret != VP8_STATUS_OK) {
         __android_log_print(ANDROID_LOG_WARN, "GLIDE_WEBP",
                         "Failed to decode frame, ret=%d", ret);
-        throwIllegalStateException(pEnv, "Failed to decode frame");
+        spNativeWebPFrame.reset();
+        throwIllegalStateException(pEnv, "Failed to decode frame. VP8StatusCode: %d", ret);
     }
 }
 
