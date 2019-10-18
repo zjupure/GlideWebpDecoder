@@ -10,13 +10,13 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.graphics.drawable.Animatable2Compat;
 import android.view.Gravity;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.vectordrawable.graphics.drawable.Animatable2Compat;
+
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.gifdecoder.GifDecoder;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.util.Preconditions;

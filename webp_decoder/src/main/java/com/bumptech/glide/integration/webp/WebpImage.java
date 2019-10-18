@@ -1,6 +1,8 @@
 package com.bumptech.glide.integration.webp;
 
-import android.support.annotation.Keep;
+
+
+import androidx.annotation.Keep;
 
 import com.bumptech.glide.util.Preconditions;
 

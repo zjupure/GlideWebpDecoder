@@ -4,9 +4,10 @@ import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.integration.webp.WebpBitmapFactory;
 import com.bumptech.glide.integration.webp.WebpHeaderParser;

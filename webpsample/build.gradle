@@ -12,9 +12,9 @@ dependencies {
 
     //implementation project(':framesequence')
 
-    implementation "com.android.support:support-fragment:${ANDROID_SUPPORT_VERSION}"
-    implementation "com.android.support:animated-vector-drawable:${ANDROID_SUPPORT_VERSION}"
-    implementation "com.android.support:recyclerview-v7:${ANDROID_SUPPORT_VERSION}"
+    implementation "androidx.fragment:fragment:${ANDROIDX_VERSION}"
+    implementation "androidx.vectordrawable:vectordrawable-animated:${ANDROIDX_VERSION}"
+    implementation "androidx.recyclerview:recyclerview:${ANDROIDX_VERSION}"
 
     implementation "com.facebook.fresco:fresco:${FRESCO_VERSION}"
     // 支持 GIF 动图，需要添加
