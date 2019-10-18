@@ -19,15 +19,17 @@ For example, if you use glide 4.9.0, the corresponding version of GlideWebpDecod
 
 Library will only follow the latest three version of Glide. If you use a lower version glide, please clone the project and modify it yourself.
 
+Glide 4.10.0 migrate to AndroidX, your project must use AndroidX too, webpdeocder with androidX is 1.6.4.10.0
+
 Glide 4.7.0 is not available in maven, see [issue 3015](https://github.com/bumptech/glide/issues/3015)
 
 Glide 4.6.0 is broken, see [issue 2863](https://github.com/bumptech/glide/issues/2863)
 
 ```gradle
-def GLIDE_VERSION = "4.9.0"
+def GLIDE_VERSION = "4.10.0"
 // webpdecoder
 implementation "com.zlc.glide:webpdecoder:1.6.${GLIDE_VERSION}"
-// glide 4.6.1~4.9.0 (exclude broken version 4.6.0, 4.7.0)
+// glide 4.6.1~4.10.0 (exclude broken version 4.6.0, 4.7.0)
 implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 ```
