@@ -1,7 +1,8 @@
 package com.bumptech.glide.integration.webp;
 
 import android.graphics.Bitmap;
-import android.support.annotation.Keep;
+
+import androidx.annotation.Keep;
 
 /**
  * Inner model class housing metadata for each animated webp frame.

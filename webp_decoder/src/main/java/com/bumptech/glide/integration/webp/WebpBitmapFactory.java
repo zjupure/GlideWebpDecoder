@@ -8,10 +8,11 @@ import android.graphics.Color;
 import android.graphics.ColorSpace;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.Keep;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+
+import androidx.annotation.Keep;
 
 import java.io.BufferedInputStream;
 import java.io.FileDescriptor;
