@@ -9,7 +9,8 @@
         android:id="@+id/webp_image"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        android:layout_marginTop="12dp"/>
+        android:layout_marginTop="12dp"
+        android:background="#e1e1e1"/>
 
     <TextView
         android:id="@+id/webp_text"
