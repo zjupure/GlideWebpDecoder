@@ -169,7 +169,7 @@ public class WebpDecoder implements GifDecoder {
         if (mWebPImage.getLoopCount() == 0) {
             return TOTAL_ITERATION_COUNT_FOREVER;
         }
-        return mWebPImage.getFrameCount() + 1;
+        return mWebPImage.getLoopCount();
     }
 
     @Override
