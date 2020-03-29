@@ -1,7 +1,7 @@
 ## GlideWebpDecoder
 
 [![license](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/zjupure/GlideWebpDecoder/blob/master/LICENSE)
-[![Release Version](https://img.shields.io/badge/release-1.6-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
+[![Release Version](https://img.shields.io/badge/release-1.6.1-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zjupure/GlideWebpDecoder/pulls)
 
 GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decoding and displaying webp images on Android platforms. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.

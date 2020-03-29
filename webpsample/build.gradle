@@ -8,7 +8,7 @@ dependencies {
     annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 
     implementation project(':webp_decoder')
-    //implementation "com.zlc.glide:webpdecoder:1.6.${GLIDE_VERSION}"
+    //implementation "com.zlc.glide:webpdecoder:1.6.1.${GLIDE_VERSION}"
 
     //implementation project(':framesequence')
 
