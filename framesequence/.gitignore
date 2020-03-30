@@ -1,2 +1,3 @@
 /build
 .externalNativeBuild
+/src/main/jni/libwebp

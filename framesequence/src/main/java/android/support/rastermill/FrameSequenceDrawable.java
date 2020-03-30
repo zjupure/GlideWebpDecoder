@@ -32,8 +32,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Process;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 public class FrameSequenceDrawable extends Drawable implements Animatable, Runnable {
     private static final String TAG = "FrameSequence";

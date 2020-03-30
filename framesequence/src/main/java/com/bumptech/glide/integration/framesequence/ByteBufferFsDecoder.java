@@ -1,7 +1,9 @@
 package com.bumptech.glide.integration.framesequence;
 
-import android.support.annotation.Nullable;
+
 import android.support.rastermill.FrameSequence;
+
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.load.ImageHeaderParser;
 import com.bumptech.glide.load.ImageHeaderParserUtils;

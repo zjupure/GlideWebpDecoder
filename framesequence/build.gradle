@@ -43,4 +43,26 @@ android {
     }
 }
 
+task copyLibwebp(type: Copy) {
+    def sourceDir = new File(project(':webp_decoder').projectDir, "src/main/jni/libwebp")
+    def targetDir = new File(projectDir, "src/main/jni/libwebp")
+    targetDir.deleteDir()
+
+    from sourceDir
+    into targetDir
+    include("**/**.c")
+    include("**/**.h")
+    include("**.mk")
+    include("**/**.rc")
+    include("**/**.in")
+}
+
+afterEvaluate {
+    project.tasks.findAll {
+        it.name.startsWith("externalNativeBuild")
+    } .each {
+        it.dependsOn copyLibwebp
+    }
+}
+
 apply from: "${rootProject.projectDir}/release-bintray.gradle"

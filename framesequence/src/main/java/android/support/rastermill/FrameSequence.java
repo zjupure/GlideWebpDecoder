@@ -17,7 +17,8 @@
 package android.support.rastermill;
 
 import android.graphics.Bitmap;
-import android.support.annotation.Keep;
+
+import androidx.annotation.Keep;
 
 import java.nio.ByteBuffer;
 

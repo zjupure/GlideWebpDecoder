@@ -1,9 +1,10 @@
 package com.bumptech.glide.integration.framesequence;
 
 import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
 import android.support.rastermill.FrameSequence;
 import android.support.rastermill.FrameSequenceDrawable;
+
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.ResourceDecoder;
