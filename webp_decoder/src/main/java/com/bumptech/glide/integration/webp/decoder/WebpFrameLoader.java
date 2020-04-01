@@ -1,6 +1,7 @@
 package com.bumptech.glide.integration.webp.decoder;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -18,7 +19,7 @@ import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.bumptech.glide.signature.ObjectKey;
 import com.bumptech.glide.util.Preconditions;
@@ -31,7 +32,6 @@ import java.util.List;
 
 
 /**
- *
  * @author liuchun
  */
 public class WebpFrameLoader {
@@ -57,6 +57,8 @@ public class WebpFrameLoader {
     private DelayTarget pendingTarget;
     @Nullable
     private WebpFrameLoader.OnEveryFrameListener onEveryFrameListener;
+    private int width;
+    private int height;
 
     public interface FrameCallback {
         void onFrameReady();
@@ -98,6 +100,9 @@ public class WebpFrameLoader {
         this.transformation = Preconditions.checkNotNull(transformation);
         this.firstFrame = (Bitmap) Preconditions.checkNotNull(firstFrame);
         requestBuilder = requestBuilder.apply((new RequestOptions()).transform(transformation));
+
+        this.width = firstFrame.getWidth();
+        this.height = firstFrame.getHeight();
     }
 
     Transformation<Bitmap> getFrameTransformation() {
@@ -132,11 +137,11 @@ public class WebpFrameLoader {
     }
 
     int getWidth() {
-        return getCurrentFrame().getWidth();
+        return width;
     }
 
     int getHeight() {
-        return getCurrentFrame().getHeight();
+        return height;
     }
 
     int getSize() {
@@ -309,7 +314,7 @@ public class WebpFrameLoader {
                 target = (DelayTarget) msg.obj;
                 WebpFrameLoader.this.onFrameReady(target);
                 return true;
-            } else if (msg.what == MSG_CLEAR){
+            } else if (msg.what == MSG_CLEAR) {
                 target = (DelayTarget) msg.obj;
                 WebpFrameLoader.this.requestManager.clear(target);
             }
@@ -318,7 +323,7 @@ public class WebpFrameLoader {
     }
 
 
-    static class DelayTarget extends SimpleTarget<Bitmap> {
+    static class DelayTarget extends CustomTarget<Bitmap> {
         private final Handler handler;
         final int index;
         private final long targetTime;
@@ -338,6 +343,11 @@ public class WebpFrameLoader {
             this.resource = resource;
             Message msg = handler.obtainMessage(1, this);
             handler.sendMessageAtTime(msg, targetTime);
+        }
+
+        @Override
+        public void onLoadCleared(@Nullable Drawable placeholder) {
+            this.resource = null;
         }
     }
 
