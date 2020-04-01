@@ -57,6 +57,7 @@ public class WebpFrameLoader {
     private DelayTarget pendingTarget;
     @Nullable
     private WebpFrameLoader.OnEveryFrameListener onEveryFrameListener;
+    private int firstFrameSize;
     private int width;
     private int height;
 
@@ -101,6 +102,7 @@ public class WebpFrameLoader {
         this.firstFrame = (Bitmap) Preconditions.checkNotNull(firstFrame);
         requestBuilder = requestBuilder.apply((new RequestOptions()).transform(transformation));
 
+        this.firstFrameSize = Util.getBitmapByteSize(firstFrame);
         this.width = firstFrame.getWidth();
         this.height = firstFrame.getHeight();
     }
@@ -145,16 +147,11 @@ public class WebpFrameLoader {
     }
 
     int getSize() {
-        return webpDecoder.getByteSize() + getFrameSize();
+        return webpDecoder.getByteSize() + firstFrameSize;
     }
 
     int getCurrentIndex() {
         return current != null ? current.index : -1;
-    }
-
-    private int getFrameSize() {
-        return Util.getBitmapByteSize(getCurrentFrame().getWidth(), getCurrentFrame().getHeight(),
-                getCurrentFrame().getConfig());
     }
 
     ByteBuffer getBuffer() {
