@@ -276,7 +276,11 @@ public class WebpFrameLoader {
         // already incremented the frame pointer and can't decode the same frame again. Instead we'll
         // just hang on to this next frame until start() or clear() are called.
         if (!isRunning) {
-            pendingTarget = delayTarget;
+            if (startFromFirstFrame) {
+                handler.obtainMessage(FrameLoaderCallback.MSG_CLEAR, delayTarget).sendToTarget();
+            } else {
+                pendingTarget = delayTarget;
+            }
             return;
         }
 
@@ -338,7 +342,7 @@ public class WebpFrameLoader {
 
         public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
             this.resource = resource;
-            Message msg = handler.obtainMessage(1, this);
+            Message msg = handler.obtainMessage(FrameLoaderCallback.MSG_DELAY, this);
             handler.sendMessageAtTime(msg, targetTime);
         }
 
