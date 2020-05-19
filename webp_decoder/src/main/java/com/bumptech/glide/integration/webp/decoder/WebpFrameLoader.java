@@ -338,7 +338,7 @@ public class WebpFrameLoader {
 
         public void onResourceReady(Bitmap resource, Transition<? super Bitmap> transition) {
             this.resource = resource;
-            Message msg = handler.obtainMessage(1, this);
+            Message msg = handler.obtainMessage(FrameLoaderCallback.MSG_DELAY, this);
             handler.sendMessageAtTime(msg, targetTime);
         }
 
