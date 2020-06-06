@@ -1,7 +1,7 @@
 ## GlideWebpDecoder
 
 [![license](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/zjupure/GlideWebpDecoder/blob/master/LICENSE)
-[![Release Version](https://img.shields.io/badge/release-1.7-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
+[![Release Version](https://img.shields.io/badge/release-1.8-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zjupure/GlideWebpDecoder/pulls)
 
 GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decoding and displaying webp images on Android platforms. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
@@ -19,17 +19,20 @@ For example, if you use glide 4.11.0, the corresponding version of GlideWebpDeco
 
 Library will only follow the latest three version of Glide. If you use a lower version glide, please clone the project and modify it yourself.
 
-Since Glide 4.10.0 has migrate to AndroidX, so your project must use AndroidX too with Glide 4.10.0+. webpdeocder with androidx is published is 1.6.4.10.0
+**Notice**
 
-Glide 4.7.0 is not available in maven, see [issue 3015](https://github.com/bumptech/glide/issues/3015)
+Since Glide 4.10.0 has migrate to AndroidX, so your project must use AndroidX with Glide 4.10.0+. 
 
-Glide 4.6.0 is broken, see [issue 2863](https://github.com/bumptech/glide/issues/2863)
+WebpDecoder with AndroidX support starts from version 1.6.{GLIDE_VERSION} and won't support glide version below 4.10.0 anymore.
+
+If your project use glide version below 4.10.0, you can only use webpdecoder 1.6 version or below.
+
 
 ```gradle
 def GLIDE_VERSION = "4.11.0"
 // webpdecoder
-implementation "com.zlc.glide:webpdecoder:1.7.${GLIDE_VERSION}"
-// glide 4.6.1~4.10.0 (exclude broken version 4.6.0, 4.7.0)
+implementation "com.zlc.glide:webpdecoder:1.8.${GLIDE_VERSION}"
+// glide 4.10.0+
 implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 ```
