@@ -57,6 +57,7 @@ public class MainActivity extends Activity {
             "https://mathiasbynens.be/demo/animated-webp-supported.webp",
             "https://isparta.github.io/compare-webp/image/gif_webp/webp/2.webp",
             "http://osscdn.ixingtu.com/musi_file/20181108/a20540641eb7de9a8bf186261a8ccf57.webp",
+            //"https://video.billionbottle.com/d6e66dbb883a48f989b1b1d0e035bbbf/image/dynamic/71fcdca947d144b883949bbe368d60c3.gif?x-oss-process=image/resize,w_320/format,webp"
     };
 
     private static final String[] ANIM_GIF = {

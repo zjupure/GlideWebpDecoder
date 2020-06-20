@@ -249,6 +249,7 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
         return paint;
     }
 
+    @Deprecated
     public int getOpacity() {
         return PixelFormat.TRANSPARENT;
     }

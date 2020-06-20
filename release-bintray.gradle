@@ -32,10 +32,10 @@ apply from: rootProject.file('scripts/android-maven-install.gradle')
 apply from: rootProject.file('scripts/bintray.gradle')
 
 // Upload to Maven
-//apply from: rootProject.file('scripts/upload.gradle')
+apply from: rootProject.file('scripts/upload.gradle')
 
 // Android tasks
-apply from: rootProject.file('scripts/android-tasks.gradle')
+//apply from: rootProject.file('scripts/android-tasks.gradle')
 
 
 afterEvaluate {

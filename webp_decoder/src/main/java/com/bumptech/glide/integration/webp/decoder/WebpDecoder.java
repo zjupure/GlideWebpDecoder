@@ -154,6 +154,7 @@ public class WebpDecoder implements GifDecoder {
         mFramePointer = -1;
     }
 
+    @Deprecated
     @Override
     public int getLoopCount() {
         return mWebPImage.getLoopCount();
@@ -192,6 +193,7 @@ public class WebpDecoder implements GifDecoder {
         int frameNumber = getCurrentFrameIndex();
         // Get the target Bitmap for Canvas
         Bitmap bitmap = mBitmapProvider.obtain(downsampledWidth, downsampledHeight, Bitmap.Config.ARGB_8888);
+        bitmap.eraseColor(Color.TRANSPARENT);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 
@@ -288,6 +290,7 @@ public class WebpDecoder implements GifDecoder {
         cache.eraseColor(Color.TRANSPARENT);
 
         Canvas canvas = new Canvas(cache);
+        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
         canvas.drawBitmap(bitmap, 0, 0, null);
 
         mFrameBitmapCache.put(frameNumber, cache);
@@ -370,10 +373,10 @@ public class WebpDecoder implements GifDecoder {
      * @param frameInfo
      */
     private void disposeToBackground(Canvas canvas, WebpFrameInfo frameInfo) {
-        final float left = frameInfo.xOffset / sampleSize;
-        final float top = frameInfo.yOffset / sampleSize;
-        final float right = (frameInfo.xOffset + frameInfo.width) / sampleSize;
-        final float bottom = (frameInfo.yOffset + frameInfo.height) / sampleSize;
+        final float left = (float)(frameInfo.xOffset / sampleSize);
+        final float top = (float)(frameInfo.yOffset / sampleSize);
+        final float right = (float)((frameInfo.xOffset + frameInfo.width) / sampleSize);
+        final float bottom = (float) ((frameInfo.yOffset + frameInfo.height) / sampleSize);
         canvas.drawRect(left, top, right, bottom, mTransparentFillPaint);
     }
 

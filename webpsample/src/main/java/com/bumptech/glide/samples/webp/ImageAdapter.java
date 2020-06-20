@@ -66,6 +66,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
         }
 
         String url = mImageUrls.get(position);
+        if (holder.imageView instanceof AspectRatioImageView) {
+            AspectRatioImageView view = (AspectRatioImageView)holder.imageView;
+            view.setAspectRatio(720.0f / 1268.0f);
+        }
+
         if (holder.imageView instanceof SimpleDraweeView) {
             SimpleDraweeView view = (SimpleDraweeView)(holder.imageView) ;
             loadImageWithFresco(view, url);
