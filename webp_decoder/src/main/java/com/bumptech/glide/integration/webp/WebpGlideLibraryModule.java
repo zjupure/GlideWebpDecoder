@@ -13,7 +13,6 @@ import com.bumptech.glide.integration.webp.decoder.ByteBufferAnimatedBitmapDecod
 import com.bumptech.glide.integration.webp.decoder.ByteBufferBitmapWebpDecoder;
 import com.bumptech.glide.integration.webp.decoder.StreamAnimatedBitmapDecoder;
 import com.bumptech.glide.integration.webp.decoder.StreamBitmapWebpDecoder;
-import com.bumptech.glide.integration.webp.decoder.Utils;
 import com.bumptech.glide.integration.webp.decoder.WebpDownsampler;
 import com.bumptech.glide.integration.webp.decoder.WebpDrawableEncoder;
 import com.bumptech.glide.load.engine.bitmap_recycle.ArrayPool;
@@ -40,17 +39,15 @@ public class WebpGlideLibraryModule extends LibraryGlideModule {
         final Resources resources = context.getResources();
         final BitmapPool bitmapPool = glide.getBitmapPool();
         final ArrayPool arrayPool = glide.getArrayPool();
-        // fix strategy on Android Q
-        final BitmapPool webpBitmapPool = Utils.getCompactBitmapPool(bitmapPool);
         /* static webp decoders */
         WebpDownsampler webpDownsampler = new WebpDownsampler(registry.getImageHeaderParsers(),
-                resources.getDisplayMetrics(), webpBitmapPool, arrayPool);
-        AnimatedWebpBitmapDecoder bitmapDecoder = new AnimatedWebpBitmapDecoder(arrayPool, webpBitmapPool);
+                resources.getDisplayMetrics(), bitmapPool, arrayPool);
+        AnimatedWebpBitmapDecoder bitmapDecoder = new AnimatedWebpBitmapDecoder(arrayPool, bitmapPool);
         ByteBufferBitmapWebpDecoder byteBufferBitmapDecoder = new ByteBufferBitmapWebpDecoder(webpDownsampler);
         StreamBitmapWebpDecoder streamBitmapDecoder = new StreamBitmapWebpDecoder(webpDownsampler, arrayPool);
         /* animate webp decoders */
         ByteBufferWebpDecoder byteBufferWebpDecoder =
-                new ByteBufferWebpDecoder(context, arrayPool, webpBitmapPool);
+                new ByteBufferWebpDecoder(context, arrayPool, bitmapPool);
         registry
                 /* Bitmaps for static webp images */
                 .prepend(Registry.BUCKET_BITMAP, ByteBuffer.class, Bitmap.class, byteBufferBitmapDecoder)

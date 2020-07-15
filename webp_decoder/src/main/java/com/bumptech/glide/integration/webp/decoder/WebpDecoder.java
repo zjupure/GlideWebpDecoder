@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.os.Build;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.LruCache;
 
@@ -194,6 +196,9 @@ public class WebpDecoder implements GifDecoder {
         // Get the target Bitmap for Canvas
         Bitmap bitmap = mBitmapProvider.obtain(downsampledWidth, downsampledHeight, Bitmap.Config.ARGB_8888);
         bitmap.eraseColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            bitmap.setDensity(DisplayMetrics.DENSITY_DEVICE_STABLE);
+        }
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
 
@@ -204,6 +209,7 @@ public class WebpDecoder implements GifDecoder {
                 if (Log.isLoggable(TAG, Log.DEBUG)) {
                     Log.d(TAG, "hit frame bitmap from memory cache, frameNumber=" + frameNumber);
                 }
+                cache.setDensity(canvas.getDensity());
                 canvas.drawBitmap(cache, 0, 0, null);
                 return bitmap;
             }
@@ -271,6 +277,7 @@ public class WebpDecoder implements GifDecoder {
         try {
             Bitmap frameBitmap = mBitmapProvider.obtain(frameWidth, frameHeight, mBitmapConfig);
             frameBitmap.eraseColor(Color.TRANSPARENT);
+            frameBitmap.setDensity(canvas.getDensity());
             webpFrame.renderFrame(frameWidth, frameHeight, frameBitmap);
             canvas.drawBitmap(frameBitmap, xOffset, yOffset, null);
             mBitmapProvider.release(frameBitmap);
@@ -288,6 +295,7 @@ public class WebpDecoder implements GifDecoder {
         // Create a new copy and put it into the cache
         Bitmap cache = mBitmapProvider.obtain(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         cache.eraseColor(Color.TRANSPARENT);
+        cache.setDensity(bitmap.getDensity());
 
         Canvas canvas = new Canvas(cache);
         canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
@@ -349,7 +357,7 @@ public class WebpDecoder implements GifDecoder {
                 // need to draw this frame
                 Bitmap bitmap = mFrameBitmapCache.get(index);
                 if (bitmap != null && !bitmap.isRecycled()) {
-
+                    bitmap.setDensity(canvas.getDensity());
                     canvas.drawBitmap(bitmap, 0, 0, null);
                     if (frameInfo.disposeBackgroundColor) {
                         disposeToBackground(canvas, frameInfo);
