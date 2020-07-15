@@ -10,6 +10,7 @@ dependencies {
 }
 
 android {
+    ndkVersion "${NDK_VERSION}"
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
 
