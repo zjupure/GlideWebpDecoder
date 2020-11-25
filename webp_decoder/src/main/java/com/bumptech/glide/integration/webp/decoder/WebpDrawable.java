@@ -322,6 +322,10 @@ public class WebpDrawable extends Drawable implements WebpFrameLoader.FrameCallb
         return state.frameLoader.getLoopCount();
     }
 
+    public void setUpSideDown(boolean upSideDown){
+        state.frameLoader.setUpSideDown(upSideDown);
+    }
+
     /**
      * Register callback to listen to WebpDrawable animation end event after specific loop count
      * set by {@link WebpDrawable#setLoopCount(int)}.
