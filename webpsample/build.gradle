@@ -17,9 +17,9 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:${ANDROIDX_VERSION}"
 
     implementation "com.facebook.fresco:fresco:${FRESCO_VERSION}"
-    // 支持 GIF 动图，需要添加
+    // Support animated GIF. It is needed.
     implementation "com.facebook.fresco:animated-gif:${FRESCO_VERSION}"
-    // 支持 WebP （静态图+动图），需要添加
+    // Support WebP (both static + animated images). It is also needed.
     implementation "com.facebook.fresco:animated-webp:${FRESCO_VERSION}"
     implementation "com.facebook.fresco:webpsupport:${FRESCO_VERSION}"
 }
