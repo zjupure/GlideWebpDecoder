@@ -1,4 +1,4 @@
-# libwebp version 1.1.0, https://github.com/webmproject/libwebp/tree/master
+# libwebp version 1.2.0, https://github.com/webmproject/libwebp/tree/master
 LOCAL_PATH := $(call my-dir)
 
 WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED
@@ -95,7 +95,6 @@ UNUSED_SRCS := \
     src/dsp/cost_neon.c \
     src/dsp/dec_msa.c \
     src/dsp/enc.c \
-    src/dsp/enc_avx2.c \
     src/dsp/enc_mips32.c \
     src/dsp/enc_mips_dsp_r2.c \
     src/dsp/enc_msa.c \
@@ -119,7 +118,6 @@ UNUSED_SRCS := \
     src/enc/backward_references_enc.c \
     src/enc/config_enc.c \
     src/enc/cost_enc.c \
-    src/enc/delta_palettization_enc.c \
     src/enc/filter_enc.c \
     src/enc/frame_enc.c \
     src/enc/histogram_enc.c \
