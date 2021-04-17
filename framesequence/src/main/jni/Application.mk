@@ -7,7 +7,7 @@ NDK_MODULE_PATH := $(APP_MK_DIR)
 
 APP_OPTIM := release
 
-APP_STL := gnustl_static
+APP_STL := c++_static
 
 # Make sure every shared lib includes a .note.gnu.build-id header
 #APP_LDFLAGS := -Wl,--build-id
@@ -19,8 +19,8 @@ APP_STL := gnustl_static
 # We also need to make sure that our library does not use any stl functions
 # coming from other stl implementations as well
 
-# This hides all symbols exported from libgnustl_static
+# This hides all symbols exported from libc++_static
 GLIDE_CPP_CFLAGS := -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-overloaded-virtual
-GLIDE_CPP_LDFLAGS := -Wl,--gc-sections,--exclude-libs,libgnustl_static.a
+GLIDE_CPP_LDFLAGS := -Wl,--gc-sections,--exclude-libs,libc++_static.a
 
 FRAMESEQUENCE_INCLUDE_WEBP := true
