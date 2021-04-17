@@ -25,6 +25,9 @@ ext {
     }
 }
 
+// Android tasks
+apply from: rootProject.file('scripts/android-tasks.gradle')
+
 // Set up the Android Maven publication (POM etc.)
 apply from: rootProject.file('scripts/android-maven-install.gradle')
 
@@ -32,17 +35,21 @@ apply from: rootProject.file('scripts/android-maven-install.gradle')
 apply from: rootProject.file('scripts/bintray.gradle')
 
 // Upload to Maven
-//apply from: rootProject.file('scripts/upload.gradle')
+apply from: rootProject.file('scripts/upload.gradle')
 
-// Android tasks
-apply from: rootProject.file('scripts/android-tasks.gradle')
+// Upload to Maven-Central
+apply from: rootProject.file('scripts/publish.gradle')
 
 
 afterEvaluate {
-    Task upload = project.tasks.getByName("bintrayUpload")
+    Task bintrayUpload = project.tasks.getByName("bintrayUpload")
+    Task mavenUpload = project.tasks.getByName("uploadArchives")
     Task build = project.tasks.getByName("build")
     Task install = project.tasks.getByName("install")
 
-    upload.dependsOn(install)
-    upload.dependsOn(build)
+    bintrayUpload.dependsOn(install)
+    bintrayUpload.dependsOn(build)
+
+    mavenUpload.dependsOn(install)
+    mavenUpload.dependsOn(build)
 }

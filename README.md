@@ -25,13 +25,22 @@ Since Glide 4.10.0 has migrate to AndroidX, so your project must use AndroidX wi
 
 WebpDecoder with AndroidX support starts from version 1.6.{GLIDE_VERSION} and won't support glide version below 4.10.0 anymore.
 
-If your project use glide version below 4.10.0, you can only use webpdecoder 1.6 version or below.
 
+**Attention**
+
+Since [JCenter is being taken down on May 1 2021](https://jfrog.com/blog/into-the-sunset-bintray-jcenter-gocenter-and-chartcenter/) and then close their service, so the library has migrate artifacts to [Maven Central](https://search.maven.org/). See issue [#76](https://github.com/zjupure/GlideWebpDecoder/issues/76) for more detail.
+
+Changes:
+* library group id has changed from `com.zlc.glide` to `com.github.zjupure`
+* add `mavenCentral()` in your `build.gradle` to fetch this library
+* only 2.0 version with glide 4.10~4.12 has been migrated and older version not support anymore
+
+If your project use old library version below 2.0, you should upgrade the library to the latest 2.0 version.
 
 ```gradle
 def GLIDE_VERSION = "4.12.0"
 // webpdecoder
-implementation "com.zlc.glide:webpdecoder:2.0.${GLIDE_VERSION}"
+implementation "com.github.zjupure:webpdecoder:2.0.${GLIDE_VERSION}"
 // glide 4.10.0+
 implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"

@@ -29,6 +29,24 @@ apply plugin: 'signing'
 version = VERSION_NAME
 group = GROUP
 
+ext["signing.keyId"] = ''
+ext["signing.password"] = ''
+ext["signing.secretKeyRingFile"] = ''
+ext["ossrhUsername"] = ''
+ext["ossrhPassword"] = ''
+
+File secretPropsFile = project.rootProject.file('local.properties')
+if (secretPropsFile.exists()) {
+    println "Found secret props file, loading props"
+    Properties p = new Properties()
+    p.load(new FileInputStream(secretPropsFile))
+    p.each { name, value ->
+        ext[name] = value
+    }
+} else {
+    println "No props file, loading env vars"
+}
+
 static def localMavenRepo() {
     'file://' + new File(System.getProperty('user.home'), '.m2/repository').absolutePath
 }
@@ -41,13 +59,13 @@ def isReleaseBuild() {
 def getReleaseRepositoryUrl() {
     return hasProperty('LOCAL') ? localMavenRepo()
             : hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
-            : 'https://oss.sonatype.org/service/local/staging/deploy/maven2/'
+            : 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
 }
 
 def getSnapshotRepositoryUrl() {
     return hasProperty('LOCAL') ? localMavenRepo()
             : hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
-            : 'https://oss.sonatype.org/content/repositories/snapshots/'
+            : 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
 }
 
 def getRepositoryUsername() {
@@ -90,30 +108,30 @@ afterEvaluate { project ->
                 // Dependencies are only automatically included by the release plugin if the release
                 // variant is built. Since we've disabled the release variant to improve build
                 // times, we need to add the dependencies to the pom file explicitly.
-                if (isAndroidProject) {
-                    pom.withXml {
-                        def dependenciesNode = asNode().appendNode('dependencies')
-
-                        project.configurations.implementation.allDependencies.each {
-                            def groupId = it.group
-                            def artifactId = it.name
-                            // If we specify an artifact id that differs from the project name, it won't
-                            // match. To avoid that, we look up the artifact id (and group) by property
-                            // for any project dependencies.
-                            // TODO: there must be a neater way to do this.
-                            if (it instanceof ProjectDependency) {
-                                def properties = it.getDependencyProject().getProperties()
-                                groupId = properties.get("GROUP")
-                                artifactId = properties.get("POM_ARTIFACT_ID")
-                            }
-                            def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', groupId)
-                            dependencyNode.appendNode('artifactId', artifactId)
-                            dependencyNode.appendNode('version', it.version)
-                            dependencyNode.appendNode('scope', 'compile')
-                        }
-                    }
-                }
+//                if (isAndroidProject) {
+//                    pom.withXml {
+//                        def dependenciesNode = asNode().appendNode('dependencies')
+//
+//                        project.configurations.implementation.allDependencies.each {
+//                            def groupId = it.group
+//                            def artifactId = it.name
+//                            // If we specify an artifact id that differs from the project name, it won't
+//                            // match. To avoid that, we look up the artifact id (and group) by property
+//                            // for any project dependencies.
+//                            // TODO: there must be a neater way to do this.
+//                            if (it instanceof ProjectDependency) {
+//                                def properties = it.getDependencyProject().getProperties()
+//                                groupId = properties.get("GROUP")
+//                                artifactId = properties.get("POM_ARTIFACT_ID")
+//                            }
+//                            def dependencyNode = dependenciesNode.appendNode('dependency')
+//                            dependencyNode.appendNode('groupId', groupId)
+//                            dependencyNode.appendNode('artifactId', artifactId)
+//                            dependencyNode.appendNode('version', it.version)
+//                            dependencyNode.appendNode('scope', 'compile')
+//                        }
+//                    }
+//                }
 
                 pom.project {
                     name = POM_NAME
@@ -189,27 +207,27 @@ afterEvaluate { project ->
         } as Task
         project.clean.dependsOn(cleanJavadocTask)
 
-        task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-            classifier = 'javadoc'
-            from androidJavadocs.destinationDir
-            baseName "${JAR_PREFIX}${project.name}${JAR_POSTFIX}"
-        }
-
-        task androidSourcesJar(type: Jar) {
-            classifier = 'sources'
-            from project.android.sourceSets.main.java.source
-            baseName "${JAR_PREFIX}${project.name}${JAR_POSTFIX}"
-        }
-
-        task androidLibraryJar(type: Jar, dependsOn: compileDebugJavaWithJavac /* == variant.javaCompile */) {
-            from compileDebugJavaWithJavac.destinationDir
-            exclude '**/R.class'
-            exclude '**/R$*.class'
-            baseName "${JAR_PREFIX}${project.name}${JAR_POSTFIX}"
-        }
+//        task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+//            classifier = 'javadoc'
+//            from androidJavadocs.destinationDir
+//            baseName "${JAR_PREFIX}${project.name}${JAR_POSTFIX}"
+//        }
+//
+//        task androidSourcesJar(type: Jar) {
+//            classifier = 'sources'
+//            from project.android.sourceSets.main.java.source
+//            baseName "${JAR_PREFIX}${project.name}${JAR_POSTFIX}"
+//        }
+//
+//        task androidLibraryJar(type: Jar, dependsOn: compileDebugJavaWithJavac /* == variant.javaCompile */) {
+//            from compileDebugJavaWithJavac.destinationDir
+//            exclude '**/R.class'
+//            exclude '**/R$*.class'
+//            baseName "${JAR_PREFIX}${project.name}${JAR_POSTFIX}"
+//        }
 
         artifacts {
-            archives androidLibraryJar
+           // archives androidLibraryJar
             archives androidSourcesJar
             archives androidJavadocsJar
             // This is unnecessary with a release variant because by default the release variant
