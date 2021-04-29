@@ -8,7 +8,7 @@ afterEvaluate { project ->
         classpath += files(android.bootClasspath)
     }
 
-    task androidJavadocJar(type: Jar) {
+    task androidJavadocsJar(type: Jar) {
         classifier = 'javadoc'
         from androidJavadoc.destinationDir
     }
@@ -25,6 +25,6 @@ afterEvaluate { project ->
         }
     }
 
-    artifacts.add('archives', androidJavadocJar)
+    artifacts.add('archives', androidJavadocsJar)
     artifacts.add('archives', androidSourcesJar)
 }
