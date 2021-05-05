@@ -285,7 +285,7 @@ public class WebpDecoder implements GifDecoder {
             webpFrame.renderFrame(frameWidth, frameHeight, frameBitmap);
             canvas.drawBitmap(frameBitmap, xOffset, yOffset, null);
             mBitmapProvider.release(frameBitmap);
-        } catch (IllegalStateException e) {
+        } catch (IllegalStateException | IllegalArgumentException e) {
             Log.e(TAG, "Rendering of frame failed. Frame number: " + frameNumber);
         } finally {
             webpFrame.dispose();

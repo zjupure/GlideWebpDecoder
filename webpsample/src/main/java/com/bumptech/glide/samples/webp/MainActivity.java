@@ -166,8 +166,12 @@ public class MainActivity extends Activity {
 
     private List<String> getAnimatedWebpUrls() {
         List<String> webpUrls = new ArrayList<>(Arrays.asList(ANIM_WEBP));
-        String resUrl = "android.resource://" + getPackageName() + "/" + R.drawable.broken;
-        webpUrls.add(resUrl);
+        int[] webpRes = {R.drawable.broken, R.drawable.small_frame};
+        for (int resId : webpRes)
+        {
+            String resUrl = "android.resource://" + getPackageName() + "/" + resId;
+            webpUrls.add(resUrl);
+        }
         return webpUrls;
     }
 
