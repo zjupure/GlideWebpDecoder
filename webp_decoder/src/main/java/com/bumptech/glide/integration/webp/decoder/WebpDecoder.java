@@ -50,6 +50,7 @@ public class WebpDecoder implements GifDecoder {
     private Bitmap.Config mBitmapConfig = Bitmap.Config.ARGB_8888;
     // 动画每一帧渲染后的Bitmap缓存
     private final LruCache<Integer, Bitmap> mFrameBitmapCache;
+    private boolean mIsUpSideDown = false;
 
     public WebpDecoder(GifDecoder.BitmapProvider provider, WebpImage webPImage, ByteBuffer rawData,
                        int sampleSize) {
@@ -98,6 +99,11 @@ public class WebpDecoder implements GifDecoder {
         return mCacheStrategy;
     }
 
+    public void setUpSideDown(boolean upSideDown) {
+        this.mIsUpSideDown = upSideDown;
+        resetFrameIndex();
+    }
+
     @Override
     public int getWidth() {
         return mWebPImage.getWidth();
@@ -120,7 +126,14 @@ public class WebpDecoder implements GifDecoder {
 
     @Override
     public void advance() {
-        mFramePointer = (mFramePointer + 1) % mWebPImage.getFrameCount();
+        if (mIsUpSideDown) {
+            mFramePointer = (mFramePointer - 1) % mWebPImage.getFrameCount();
+            if (mFramePointer < 0) {
+                mFramePointer = mWebPImage.getFrameCount() - 1;
+            }
+        } else {
+            mFramePointer = (mFramePointer + 1) % mWebPImage.getFrameCount();
+        }
     }
 
     @Override
@@ -153,7 +166,11 @@ public class WebpDecoder implements GifDecoder {
 
     @Override
     public void resetFrameIndex() {
-        mFramePointer = -1;
+        if (mIsUpSideDown) {
+            mFramePointer = getFrameCount();
+        } else {
+            mFramePointer = -1;
+        }
     }
 
     @Deprecated

@@ -166,6 +166,10 @@ public class WebpFrameLoader {
         return webpDecoder.getTotalIterationCount();
     }
 
+    void setUpSideDown(boolean upSideDown){
+        webpDecoder.setUpSideDown(upSideDown);
+    }
+
     private void start() {
         if (isRunning) {
             return;
