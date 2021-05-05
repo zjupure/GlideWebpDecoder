@@ -273,6 +273,10 @@ public class WebpDecoder implements GifDecoder {
         int xOffset = frameInfo.xOffset / sampleSize;
         int yOffset = frameInfo.yOffset / sampleSize;
 
+        if (frameWidth == 0 || frameHeight == 0) {
+            return;
+        }
+
         WebpFrame webpFrame = mWebPImage.getFrame(frameNumber);
         try {
             Bitmap frameBitmap = mBitmapProvider.obtain(frameWidth, frameHeight, mBitmapConfig);
