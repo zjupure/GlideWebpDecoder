@@ -1,6 +1,7 @@
 APP_BUILD_SCRIPT := Android.mk
 
-APP_ABI := armeabi-v7a armeabi arm64-v8a x86 x86_64
+APP_ABI := armeabi-v7a arm64-v8a x86 x86_64
+APP_PLATFORM := android-16
 
 APP_MK_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
 NDK_MODULE_PATH := $(APP_MK_DIR)
@@ -20,4 +21,4 @@ APP_STL := c++_static
 # coming from other stl implementations as well
 
 # This hides all symbols exported from libc++_static
-GLIDE_CPP_LDFLAGS := -Wl,--gc-sections,--exclude-libs,libc++_static.a
+GLIDE_CPP_LDFLAGS := -Wl,--build-id,--gc-sections,--exclude-libs,libc++_static.a
