@@ -3,7 +3,14 @@ package com.bumptech.glide.samples.webp;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.DynamicDrawableSpan;
+import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,19 +18,24 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.integration.webp.decoder.WebpDrawable;
 import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.CenterInside;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Displays an webp image loaded from an android raw resource.
@@ -72,6 +84,7 @@ public class MainActivity extends Activity {
     private TextView mTextView;
     private RecyclerView mRecyclerView;
     private ImageAdapter mWebpAdapter;
+    private TextView mImageSpan;
 
     private Transformation<Bitmap> mBitmapTrans = null;
 
@@ -79,6 +92,8 @@ public class MainActivity extends Activity {
     private Menu mActionMenu;
 
     private int mImageType = 0;
+
+    private LoadWebpSpanTask mSpanTask = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +103,7 @@ public class MainActivity extends Activity {
         mTextView = (TextView) findViewById(R.id.webp_image_type);
         mRecyclerView = (RecyclerView) findViewById(R.id.webp_recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mImageSpan = (TextView) findViewById(R.id.webp_image_span);
 
         mWebpAdapter = new ImageAdapter(this, getAnimatedWebpUrls());
         mRecyclerView.setAdapter(mWebpAdapter);
@@ -150,17 +166,25 @@ public class MainActivity extends Activity {
         int id = item.getItemId();
         handleMenuItemCheck(item);
 
+        int imageType = mImageType;
         if (id == R.id.static_webp_action) {
-            mImageType = 1;
+            imageType = 1;
         } else if (id == R.id.alpha_webp_action) {
-            mImageType = 2;
+            imageType = 2;
         } else if (id == R.id.animate_webp_action) {
-            mImageType = 0;
+            imageType = 0;
         } else if (id == R.id.animate_gif_action) {
-            mImageType = 3;
+            imageType = 3;
+        } else if (id == R.id.webp_span_action) {
+            imageType = 4;
         }
 
-        refreshImageData(mImageType);
+        if (imageType != mImageType)
+        {
+            mImageType = imageType;
+            refreshImageData(mImageType);
+        }
+
         return true;
     }
 
@@ -177,6 +201,8 @@ public class MainActivity extends Activity {
 
     private void refreshImageData(int imageType) {
 
+        mRecyclerView.setVisibility(View.VISIBLE);
+        mImageSpan.setVisibility(View.GONE);
         mWebpAdapter.setBitmapTransformation(mBitmapTrans);
         switch (imageType) {
             case 0:
@@ -199,6 +225,17 @@ public class MainActivity extends Activity {
                 mTextView.setText("animated gif");
                 mWebpAdapter.updateData(Arrays.asList(ANIM_GIF));
                 break;
+            case 4:
+                // Image Span
+                mRecyclerView.setVisibility(View.GONE);
+                mImageSpan.setVisibility(View.VISIBLE);
+                mTextView.setText("webp image span");
+
+                String testUrl = "android.resource://" + getPackageName() + "/" + R.drawable.small_frame;
+                if (mSpanTask == null) {
+                    mSpanTask = new LoadWebpSpanTask();
+                }
+                mSpanTask.execute(testUrl);
             default:
                 break;
         }
@@ -216,6 +253,69 @@ public class MainActivity extends Activity {
                 item.setChecked(true);
             } else {
                 item.setChecked(false);
+            }
+        }
+    }
+
+    /**
+     * a async task to load webp images with glide in background thread
+     */
+    private class LoadWebpSpanTask extends AsyncTask<String, Integer, SpannableString> {
+
+        private Drawable mDrawable;
+        private Drawable.Callback mCallback;
+
+        @Override
+        protected SpannableString doInBackground(String... urls) {
+            if (urls.length <= 0 || urls[0] == null) {
+                return null;
+            }
+
+            String webpUrl = urls[0];
+            try {
+                Drawable drawable = GlideApp.with(MainActivity.this)
+                        .load(webpUrl)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get(); // get a webp drawable instance
+                drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+                if (drawable instanceof WebpDrawable) {
+                    ((WebpDrawable) drawable).start();  // start animation
+                }
+                mCallback = new Drawable.Callback() {
+                    @Override
+                    public void invalidateDrawable(@NonNull Drawable who) {
+                        mImageSpan.postInvalidate();
+                    }
+
+                    @Override
+                    public void scheduleDrawable(@NonNull Drawable who, @NonNull Runnable what, long when) {
+
+                    }
+
+                    @Override
+                    public void unscheduleDrawable(@NonNull Drawable who, @NonNull Runnable what) {
+
+                    }
+                };
+                mDrawable = drawable;
+                mDrawable.setCallback(mCallback);  // set Drawable.Callback to refresh TextView
+
+                SpannableString ss = new SpannableString("This is a webp span ");
+                // using the default alignment: ALIGN_BOTTOM
+                ss.setSpan(new ImageSpan(drawable, DynamicDrawableSpan.ALIGN_BOTTOM), ss.length() - 1, ss.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                return ss;
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(SpannableString text) {
+            if (text != null) {
+                mImageSpan.setText(text);
             }
         }
     }

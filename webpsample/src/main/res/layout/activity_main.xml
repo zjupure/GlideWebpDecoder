@@ -38,4 +38,11 @@
         android:id="@+id/webp_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <TextView
+        android:id="@+id/webp_image_span"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:visibility="gone"/>
 </LinearLayout>

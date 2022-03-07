@@ -24,5 +24,9 @@
             android:id="@+id/animate_gif_action"
             android:checkable="true"
             android:title="show animate gif" />
+
+        <item android:id="@+id/webp_span_action"
+            android:checkable="true"
+            android:title="show webp image span" />
     </group>
 </menu>
