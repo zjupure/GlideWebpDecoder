@@ -232,9 +232,7 @@ public class MainActivity extends Activity {
                 mTextView.setText("webp image span");
 
                 String testUrl = "android.resource://" + getPackageName() + "/" + R.drawable.small_frame;
-                if (mSpanTask == null) {
-                    mSpanTask = new LoadWebpSpanTask();
-                }
+                mSpanTask = new LoadWebpSpanTask();
                 mSpanTask.execute(testUrl);
             default:
                 break;
