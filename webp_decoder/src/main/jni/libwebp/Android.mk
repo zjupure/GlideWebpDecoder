@@ -1,4 +1,4 @@
-# libwebp version 1.2.0, https://github.com/webmproject/libwebp/tree/master
+# libwebp version 1.2.1, https://github.com/webmproject/libwebp/tree/master
 LOCAL_PATH := $(call my-dir)
 
 WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED
@@ -18,6 +18,8 @@ ifneq ($(findstring armeabi-v7a, $(TARGET_ARCH_ABI)),)
   # instructions to be generated for armv7a code. Instead target the neon code
   # specifically.
   NEON := c.neon
+  USE_CPUFEATURES := yes
+  WEBP_CFLAGS += -DHAVE_CPU_FEATURES_H
 else
   NEON := c
 endif
@@ -51,6 +53,7 @@ LOCAL_SRC_FILES := \
     src/dsp/lossless.c \
     src/dsp/lossless_neon.$(NEON) \
     src/dsp/lossless_sse2.c \
+    src/dsp/lossless_sse41.c \
     src/dsp/rescaler.c \
     src/dsp/rescaler_neon.$(NEON) \
     src/dsp/rescaler_sse2.c \
