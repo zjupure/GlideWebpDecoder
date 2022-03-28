@@ -1,4 +1,4 @@
-# libwebp version 1.2.0, https://github.com/webmproject/libwebp/tree/master
+# libwebp version 1.2.2, https://github.com/webmproject/libwebp/tree/master (https://chromium.googlesource.com/webm/libwebp)
 LOCAL_PATH := $(call my-dir)
 
 WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED
@@ -51,6 +51,7 @@ LOCAL_SRC_FILES := \
     src/dsp/lossless.c \
     src/dsp/lossless_neon.$(NEON) \
     src/dsp/lossless_sse2.c \
+    src/dsp/lossless_sse41.c \
     src/dsp/rescaler.c \
     src/dsp/rescaler_neon.$(NEON) \
     src/dsp/rescaler_sse2.c \

@@ -107,63 +107,77 @@ static WEBP_INLINE uint32_t Select(uint32_t a, uint32_t b, uint32_t c) {
 //------------------------------------------------------------------------------
 // Predictors
 
-uint32_t VP8LPredictor0_C(uint32_t left, const uint32_t* const top) {
+uint32_t VP8LPredictor0_C(const uint32_t* const left,
+                          const uint32_t* const top) {
   (void)top;
   (void)left;
   return ARGB_BLACK;
 }
-uint32_t VP8LPredictor1_C(uint32_t left, const uint32_t* const top) {
+uint32_t VP8LPredictor1_C(const uint32_t* const left,
+                          const uint32_t* const top) {
   (void)top;
-  return left;
+  return *left;
 }
-uint32_t VP8LPredictor2_C(uint32_t left, const uint32_t* const top) {
+uint32_t VP8LPredictor2_C(const uint32_t* const left,
+                          const uint32_t* const top) {
   (void)left;
   return top[0];
 }
-uint32_t VP8LPredictor3_C(uint32_t left, const uint32_t* const top) {
+uint32_t VP8LPredictor3_C(const uint32_t* const left,
+                          const uint32_t* const top) {
   (void)left;
   return top[1];
 }
-uint32_t VP8LPredictor4_C(uint32_t left, const uint32_t* const top) {
+uint32_t VP8LPredictor4_C(const uint32_t* const left,
+                          const uint32_t* const top) {
   (void)left;
   return top[-1];
 }
-uint32_t VP8LPredictor5_C(uint32_t left, const uint32_t* const top) {
-  const uint32_t pred = Average3(left, top[0], top[1]);
+uint32_t VP8LPredictor5_C(const uint32_t* const left,
+                          const uint32_t* const top) {
+  const uint32_t pred = Average3(*left, top[0], top[1]);
   return pred;
 }
-uint32_t VP8LPredictor6_C(uint32_t left, const uint32_t* const top) {
-  const uint32_t pred = Average2(left, top[-1]);
+uint32_t VP8LPredictor6_C(const uint32_t* const left,
+                          const uint32_t* const top) {
+  const uint32_t pred = Average2(*left, top[-1]);
   return pred;
 }
-uint32_t VP8LPredictor7_C(uint32_t left, const uint32_t* const top) {
-  const uint32_t pred = Average2(left, top[0]);
+uint32_t VP8LPredictor7_C(const uint32_t* const left,
+                          const uint32_t* const top) {
+  const uint32_t pred = Average2(*left, top[0]);
   return pred;
 }
-uint32_t VP8LPredictor8_C(uint32_t left, const uint32_t* const top) {
+uint32_t VP8LPredictor8_C(const uint32_t* const left,
+                          const uint32_t* const top) {
   const uint32_t pred = Average2(top[-1], top[0]);
   (void)left;
   return pred;
 }
-uint32_t VP8LPredictor9_C(uint32_t left, const uint32_t* const top) {
+uint32_t VP8LPredictor9_C(const uint32_t* const left,
+                          const uint32_t* const top) {
   const uint32_t pred = Average2(top[0], top[1]);
   (void)left;
   return pred;
 }
-uint32_t VP8LPredictor10_C(uint32_t left, const uint32_t* const top) {
-  const uint32_t pred = Average4(left, top[-1], top[0], top[1]);
+uint32_t VP8LPredictor10_C(const uint32_t* const left,
+                           const uint32_t* const top) {
+  const uint32_t pred = Average4(*left, top[-1], top[0], top[1]);
   return pred;
 }
-uint32_t VP8LPredictor11_C(uint32_t left, const uint32_t* const top) {
-  const uint32_t pred = Select(top[0], left, top[-1]);
+uint32_t VP8LPredictor11_C(const uint32_t* const left,
+                           const uint32_t* const top) {
+  const uint32_t pred = Select(top[0], *left, top[-1]);
   return pred;
 }
-uint32_t VP8LPredictor12_C(uint32_t left, const uint32_t* const top) {
-  const uint32_t pred = ClampedAddSubtractFull(left, top[0], top[-1]);
+uint32_t VP8LPredictor12_C(const uint32_t* const left,
+                           const uint32_t* const top) {
+  const uint32_t pred = ClampedAddSubtractFull(*left, top[0], top[-1]);
   return pred;
 }
-uint32_t VP8LPredictor13_C(uint32_t left, const uint32_t* const top) {
-  const uint32_t pred = ClampedAddSubtractHalf(left, top[0], top[-1]);
+uint32_t VP8LPredictor13_C(const uint32_t* const left,
+                           const uint32_t* const top) {
+  const uint32_t pred = ClampedAddSubtractHalf(*left, top[0], top[-1]);
   return pred;
 }
 
@@ -575,6 +589,7 @@ VP8LMapARGBFunc VP8LMapColor32b;
 VP8LMapAlphaFunc VP8LMapColor8b;
 
 extern void VP8LDspInitSSE2(void);
+extern void VP8LDspInitSSE41(void);
 extern void VP8LDspInitNEON(void);
 extern void VP8LDspInitMIPSdspR2(void);
 extern void VP8LDspInitMSA(void);
@@ -621,9 +636,14 @@ WEBP_DSP_INIT_FUNC(VP8LDspInit) {
 
   // If defined, use CPUInfo() to overwrite some pointers with faster versions.
   if (VP8GetCPUInfo != NULL) {
-#if defined(WEBP_USE_SSE2)
+#if defined(WEBP_HAVE_SSE2)
     if (VP8GetCPUInfo(kSSE2)) {
       VP8LDspInitSSE2();
+#if defined(WEBP_HAVE_SSE41)
+      if (VP8GetCPUInfo(kSSE4_1)) {
+        VP8LDspInitSSE41();
+      }
+#endif
     }
 #endif
 #if defined(WEBP_USE_MIPS_DSP_R2)
@@ -638,7 +658,7 @@ WEBP_DSP_INIT_FUNC(VP8LDspInit) {
 #endif
   }
 
-#if defined(WEBP_USE_NEON)
+#if defined(WEBP_HAVE_NEON)
   if (WEBP_NEON_OMIT_C_CODE ||
       (VP8GetCPUInfo != NULL && VP8GetCPUInfo(kNEON))) {
     VP8LDspInitNEON();
