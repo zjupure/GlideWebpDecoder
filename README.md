@@ -33,12 +33,12 @@ Since [JCenter is being taken down on May 1 2021](https://jfrog.com/blog/into-th
 Changes:
 * library group id has changed from `com.zlc.glide` to `com.github.zjupure`
 * add `mavenCentral()` in your `build.gradle` to fetch this library
-* only 2.0 version with glide 4.10~4.12 has been migrated and older version not support anymore
+* only 2.0 version with glide 4.10~4.13 has been migrated and older version not support anymore
 
 If your project use old library version below 2.0, you should upgrade the library to the latest 2.0 version.
 
 ```gradle
-def GLIDE_VERSION = "4.12.0"
+def GLIDE_VERSION = "4.13.1"
 // webpdecoder
 implementation "com.github.zjupure:webpdecoder:2.0.${GLIDE_VERSION}"
 // glide 4.10.0+
