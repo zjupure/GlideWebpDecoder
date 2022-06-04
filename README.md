@@ -38,7 +38,7 @@ Changes:
 If your project use old library version below 2.0, you should upgrade the library to the latest 2.0 version.
 
 ```gradle
-def GLIDE_VERSION = "4.13.1"
+def GLIDE_VERSION = "4.13.2"
 // webpdecoder
 implementation "com.github.zjupure:webpdecoder:2.0.${GLIDE_VERSION}"
 // glide 4.10.0+

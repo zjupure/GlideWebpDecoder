@@ -274,7 +274,7 @@ public class MainActivity extends Activity {
                 Drawable drawable = GlideApp.with(MainActivity.this)
                         .load(webpUrl)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .get(); // get a webp drawable instance
                 drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
                 if (drawable instanceof WebpDrawable) {
