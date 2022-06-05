@@ -47,9 +47,7 @@ public class ByteBufferFsDecoder implements ResourceDecoder<ByteBuffer, FrameSeq
             return true;
         }
 
-        if (options.get(DISABLE_WEBP) ||
-                (imageType != ImageHeaderParser.ImageType.WEBP
-                && imageType != ImageHeaderParser.ImageType.WEBP_A)) {
+        if (options.get(DISABLE_WEBP) || !isWebp(imageType)) {
             // Non Webp
             return false;
         }
@@ -70,7 +68,24 @@ public class ByteBufferFsDecoder implements ResourceDecoder<ByteBuffer, FrameSeq
         if (fs == null) {
             return null;
         }
-
+//        int sampleSize = getSampleSize(fs.getWidth(), fs.getHeight(), width, height);
+//        fs.setSampleSize(sampleSize);
         return new FrameSequenceResource(fs);
+    }
+
+
+    public static boolean isWebp(ImageHeaderParser.ImageType imageType) {
+        return imageType == ImageHeaderParser.ImageType.WEBP
+                || imageType == ImageHeaderParser.ImageType.WEBP_A
+                || imageType == ImageHeaderParser.ImageType.ANIMATED_WEBP;
+    }
+
+    static int getSampleSize(int srcWidth, int srcHeight, int targetWidth, int targetHeight) {
+        int exactSampleSize = Math.min(srcHeight / targetHeight,
+                srcWidth / targetWidth);
+        int powerOfTwoSampleSize = exactSampleSize == 0 ? 0 : Integer.highestOneBit(exactSampleSize);
+        // Although functionally equivalent to 0 for BitmapFactory, 1 is a safer default for our code
+        // than 0.
+        return Math.max(1, powerOfTwoSampleSize);
     }
 }

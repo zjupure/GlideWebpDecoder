@@ -50,9 +50,7 @@ public class StreamFsDecoder implements ResourceDecoder<InputStream, FrameSequen
             return true;
         }
 
-        if (options.get(DISABLE_WEBP) ||
-                (imageType != ImageHeaderParser.ImageType.WEBP
-                        && imageType != ImageHeaderParser.ImageType.WEBP_A)) {
+        if (options.get(DISABLE_WEBP) || !ByteBufferFsDecoder.isWebp(imageType)) {
             // Non Webp
             return false;
         }
@@ -69,7 +67,8 @@ public class StreamFsDecoder implements ResourceDecoder<InputStream, FrameSequen
         if (fs == null) {
             return null;
         }
-
+//        int sampleSize = ByteBufferFsDecoder.getSampleSize(fs.getWidth(), fs.getHeight(), width, height);
+//        fs.setSampleSize(sampleSize);
         return new FrameSequenceResource(fs);
     }
 }

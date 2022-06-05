@@ -64,6 +64,7 @@ afterEvaluate {
     } .each {
         it.dependsOn copyLibwebp
     }
+    copyLibwebp.execute()
 }
 
 apply from: "${rootProject.projectDir}/release-bintray.gradle"

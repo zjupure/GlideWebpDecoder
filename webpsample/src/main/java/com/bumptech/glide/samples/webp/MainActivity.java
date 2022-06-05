@@ -3,6 +3,7 @@ package com.bumptech.glide.samples.webp;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,7 +23,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.integration.webp.decoder.WebpDrawable;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -63,12 +63,9 @@ public class MainActivity extends Activity {
             "https://www.gstatic.com/webp/gallery3/5_webp_a.webp",
     };
     private static final String[] ANIM_WEBP = {
-            //"https://raw.githubusercontent.com/1290846731/RecordMySelf/master/chect.webp",
             "https://www.gstatic.com/webp/animated/1.webp",
-            "https://qidian.qpic.cn/qidian_common/349573/a36f7d7d8a5e15e1cf3c32d05109467a/0",
             "https://mathiasbynens.be/demo/animated-webp-supported.webp",
             "https://isparta.github.io/compare-webp/image/gif_webp/webp/2.webp",
-            //"http://osscdn.ixingtu.com/musi_file/20181108/a20540641eb7de9a8bf186261a8ccf57.webp",
             //"https://video.billionbottle.com/d6e66dbb883a48f989b1b1d0e035bbbf/image/dynamic/71fcdca947d144b883949bbe368d60c3.gif?x-oss-process=image/resize,w_320/format,webp"
     };
 
@@ -277,8 +274,8 @@ public class MainActivity extends Activity {
                         .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .get(); // get a webp drawable instance
                 drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-                if (drawable instanceof WebpDrawable) {
-                    ((WebpDrawable) drawable).start();  // start animation
+                if (drawable instanceof Animatable) {
+                    ((Animatable) drawable).start();  // start animation
                 }
                 mCallback = new Drawable.Callback() {
                     @Override
