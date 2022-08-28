@@ -24,6 +24,9 @@ if (secretPropsFile.exists()) {
     println "No props file, loading env vars"
 }
 
+// JIRA: https://issues.sonatype.org/browse/OSSRH-65440?page=com.atlassian.jira.plugin.system.issuetabpanels%3Aall-tabpanel
+// Sonatype: https://s01.oss.sonatype.org/
+
 version = VERSION_NAME
 group = GROUP
 

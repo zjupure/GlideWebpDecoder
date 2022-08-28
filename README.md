@@ -1,7 +1,7 @@
 ## GlideWebpDecoder
 
 [![license](http://img.shields.io/badge/license-Apache2.0-brightgreen.svg?style=flat)](https://github.com/zjupure/GlideWebpDecoder/blob/master/LICENSE)
-[![Release Version](https://img.shields.io/badge/release-2.0-red.svg)](https://github.com/zjupure/GlideWebpDecoder/releases)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.zjupure/webpdecoder/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.zjupure/webpdecoder)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/zjupure/GlideWebpDecoder/pulls)
 
 GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration library for decoding and displaying webp images on Android platforms. It is based on [libwebp](https://github.com/webmproject/libwebp) project and takes some implementation from [Fresco](https://github.com/facebook/fresco) and [GlideWebpSupport](https://github.com/roths/GlideWebpSupport) as references.
@@ -40,7 +40,7 @@ If your project use old library version below 2.0, you should upgrade the librar
 ```gradle
 def GLIDE_VERSION = "4.13.2"
 // webpdecoder
-implementation "com.github.zjupure:webpdecoder:2.0.${GLIDE_VERSION}"
+implementation "com.github.zjupure:webpdecoder:2.1.${GLIDE_VERSION}"
 // glide 4.10.0+
 implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
