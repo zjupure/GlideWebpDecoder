@@ -15,7 +15,7 @@ import androidx.annotation.Keep;
 public class WebpFrame {
 
     // See comment in fixFrameDuration below.
-    static final int MIN_FRAME_DURATION_MS = 20;
+    static final int MIN_FRAME_DURATION_MS = 11;
     static final int FRAME_DURATION_MS_FOR_MIN = 100;
 
     // Access from Native
