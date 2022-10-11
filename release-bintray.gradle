@@ -46,6 +46,13 @@ afterEvaluate {
     Task mavenUpload = project.tasks.getByName("uploadArchives")
     Task build = project.tasks.getByName("build")
     Task install = project.tasks.getByName("install")
+    Task assemble = project.tasks.getByName("assemble")
+    project.tasks.findAll {
+        it.name.startsWith("publish")
+    }.each {
+        it.dependsOn(build)
+        it.dependsOn(assemble)
+    }
 
     bintrayUpload.dependsOn(install)
     bintrayUpload.dependsOn(build)
