@@ -40,7 +40,7 @@ If your project use old library version below 2.0, you should upgrade the librar
 ```gradle
 def GLIDE_VERSION = "4.13.2"
 // webpdecoder
-implementation "com.github.zjupure:webpdecoder:2.2.${GLIDE_VERSION}"
+implementation "com.github.zjupure:webpdecoder:2.3.${GLIDE_VERSION}"
 // glide 4.10.0+
 implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
