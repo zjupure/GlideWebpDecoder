@@ -1,4 +1,4 @@
-# libwebp version 1.2.2, https://github.com/webmproject/libwebp/tree/master (https://chromium.googlesource.com/webm/libwebp)
+# libwebp version 1.2.4, https://github.com/webmproject/libwebp/tree/master (https://chromium.googlesource.com/webm/libwebp)
 LOCAL_PATH := $(call my-dir)
 
 WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED
