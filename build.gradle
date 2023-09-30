@@ -69,10 +69,10 @@ subprojects { project ->
     }
 }
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.1'
-    distributionType = Wrapper.DistributionType.ALL
-}
+//task wrapper(type: Wrapper) {
+//    gradleVersion = '5.4'
+//    distributionType = Wrapper.DistributionType.ALL
+//}
 
 ext {
     GLIDE_MAJOR_VERSION = GLIDE_VERSION.split("\\.")[0] as String
