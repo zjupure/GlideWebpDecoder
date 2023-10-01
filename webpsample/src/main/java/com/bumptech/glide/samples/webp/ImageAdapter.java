@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.integration.webp.decoder.WebpDownsampler;
 import com.bumptech.glide.integration.webp.decoder.WebpDrawable;
 import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation;
 import com.bumptech.glide.load.Transformation;
@@ -106,6 +107,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
                 .placeholder(R.drawable.image_loading)
                 .error(R.drawable.image_error)
                 //.set(WebpFrameLoader.FRAME_CACHE_STRATEGY, WebpFrameCacheStrategy.AUTO)
+                .set(WebpDownsampler.USE_SYSTEM_DECODER, false)
                 .into(imageView);
     }
 
@@ -119,6 +121,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
                 .optionalTransform(mBitmapTrans)
                 .optionalTransform(WebpDrawable.class, new WebpDrawableTransformation(mBitmapTrans))
                 //.set(WebpFrameLoader.FRAME_CACHE_STRATEGY, WebpFrameCacheStrategy.AUTO)
+                .set(WebpDownsampler.USE_SYSTEM_DECODER, false)
                 .into(imageView);
     }
 

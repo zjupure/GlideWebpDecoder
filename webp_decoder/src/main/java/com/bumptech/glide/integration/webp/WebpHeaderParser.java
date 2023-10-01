@@ -184,7 +184,7 @@ public class WebpHeaderParser {
          */
         WEBP_LOSSLESS(false, false),
         /**
-         * Simple Webp type (Lossless) with alpha and withoud animation
+         * Simple Webp type (Lossless) with alpha and without animation
          */
         WEBP_LOSSLESS_WITH_ALPHA(true, false),
         /**

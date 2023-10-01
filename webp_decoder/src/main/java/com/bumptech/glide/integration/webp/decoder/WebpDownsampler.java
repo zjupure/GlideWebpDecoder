@@ -50,6 +50,9 @@ public final class WebpDownsampler {
     public static final Option<Boolean> DISABLE_DECODER = Option.memory(
             "com.bumptech.glide.integration.webp.decoder.WebpDownsampler.DisableDecoder", false);
 
+    public static final Option<Boolean> USE_SYSTEM_DECODER = Option.memory(
+            "com.bumptech.glide.integration.webp.decoder.WebpDownsampler.SystemDecoder", true);
+
     private static final Downsampler.DecodeCallbacks EMPTY_CALLBACKS = new Downsampler.DecodeCallbacks() {
         @Override
         public void onObtainBounds() {
@@ -86,29 +89,45 @@ public final class WebpDownsampler {
     }
 
     public boolean handles(InputStream is, Options options) throws IOException{
-        if (options.get(DISABLE_DECODER)
-            || WebpHeaderParser.sIsExtendedWebpSupported) {
-            // Android System support decode this webp, just to next decoder
+        if (options.get(DISABLE_DECODER)) {
+            // disable by user
             return false;
         }
-
+        // user can disable webp decoder from android framework by options for CVE-2023-4863 (https://github.com/advisories/GHSA-j7hp-h8jx-5ppr),
+        if (options.get(USE_SYSTEM_DECODER)) {
+            if (WebpHeaderParser.sIsExtendedWebpSupported) {
+                // Android framework support webp decoder, just to next decoder
+                return false;
+            }
+            WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(is, byteArrayPool);
+            // handle lossless and transparent webp below Android 4.2
+            return WebpHeaderParser.isStaticWebpType(webpType)
+                    && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE;
+        }
+        // force use libwebp in this library for all Android versions
         WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(is, byteArrayPool);
-        // handle lossless and transparent webp
-        return WebpHeaderParser.isStaticWebpType(webpType)
-                && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE;
+        return WebpHeaderParser.isStaticWebpType(webpType);
     }
 
     public boolean handles(ByteBuffer byteBuffer, Options options) throws IOException{
-        if (options.get(DISABLE_DECODER)
-            || WebpHeaderParser.sIsExtendedWebpSupported) {
-            // Android System support decode this webp, just to next decoder
+        if (options.get(DISABLE_DECODER)) {
+            // disable by user
             return false;
         }
-
+        // user can disable webp decoder from android framework by options for CVE-2023-4863 (https://github.com/advisories/GHSA-j7hp-h8jx-5ppr),
+        if (options.get(USE_SYSTEM_DECODER)) {
+            if (WebpHeaderParser.sIsExtendedWebpSupported) {
+                // Android framework support webp decoder, just to next decoder
+                return false;
+            }
+            WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(byteBuffer);
+            // handle lossless and transparent webp below Android 4.2
+            return WebpHeaderParser.isStaticWebpType(webpType)
+                    && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE;
+        }
+        // force use libwebp in this library for all Android versions
         WebpHeaderParser.WebpImageType webpType = WebpHeaderParser.getType(byteBuffer);
-        // handle lossless and transparent webp
-        return WebpHeaderParser.isStaticWebpType(webpType)
-                && webpType != WebpHeaderParser.WebpImageType.WEBP_SIMPLE;
+        return WebpHeaderParser.isStaticWebpType(webpType);
     }
 
 
