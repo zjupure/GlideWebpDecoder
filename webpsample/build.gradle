@@ -6,6 +6,8 @@ dependencies {
         exclude group:"com.android.support"
     }
     annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
+    // okhttp network
+    implementation "com.github.bumptech.glide:okhttp3-integration:${GLIDE_VERSION}"
 
     implementation project(':webp_decoder')
     //implementation "com.github.zjupure:webpdecoder:${DECODER_VERSION}.${GLIDE_VERSION}"
