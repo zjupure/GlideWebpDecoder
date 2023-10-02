@@ -32,6 +32,8 @@ public class WebpBitmapFactory {
 
     private static final int MAX_WEBP_HEADER_SIZE = 21;
 
+    public static boolean sUseSystemDecoder = true;
+
     static {
         System.loadLibrary("glide-webp");
     }
@@ -104,7 +106,14 @@ public class WebpBitmapFactory {
         if (options != null &&
                 options.inBitmap != null &&
                 options.inBitmap.isMutable()) {
-            return options.inBitmap;
+            Bitmap bm = options.inBitmap;
+            if (bm.getWidth() == width &&
+                    bm.getHeight() == height &&
+                    bm.getConfig() == options.inPreferredConfig) {
+                bm.setHasAlpha(true);
+                bm.eraseColor(Color.TRANSPARENT);
+                return bm;
+            }
         }
         Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         bitmap.setHasAlpha(true);
@@ -127,7 +136,9 @@ public class WebpBitmapFactory {
     }
 
     /**
-     * 是否需要使用libwebp进行webp解码，4.2以下系统针对无损和透明webp图片
+     * 是否需要使用libwebp进行webp解码
+     * 1. sUseSystemDecoder=true, 4.2以下系统针对无损和透明webp图片
+     * 2. sUseSystemDecoder=false, Android所有版本都使用libwebp解码
      * @param headers
      * @param offset
      * @param length
@@ -142,8 +153,12 @@ public class WebpBitmapFactory {
             imageType = WebpHeaderParser.WebpImageType.NONE_WEBP;
         }
 
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1 &&
-                WebpHeaderParser.isNonSimpleWebpType(imageType);
+        if (sUseSystemDecoder) {
+            return Build.VERSION.SDK_INT <= Build.VERSION_CODES.JELLY_BEAN_MR1 &&
+                    WebpHeaderParser.isNonSimpleWebpType(imageType);
+        } else {
+            return WebpHeaderParser.isStaticWebpType(imageType);
+        }
     }
 
 
@@ -528,7 +543,8 @@ public class WebpBitmapFactory {
                 int targetDensity = options.inTargetDensity;
                 int screenDensity = options.inScreenDensity;
                 if (density != 0 && targetDensity != 0 && density != screenDensity) {
-                    scale = targetDensity / (float) density;
+                    float factor = targetDensity / (float) density;
+                    scale = scale * factor;
                 }
             }
         }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.integration.webp.WebpBitmapFactory;
 import com.bumptech.glide.integration.webp.decoder.WebpDownsampler;
 import com.bumptech.glide.integration.webp.decoder.WebpDrawable;
 import com.bumptech.glide.integration.webp.decoder.WebpDrawableTransformation;
@@ -101,6 +102,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
 
 
     private void loadImage(ImageView imageView, String url) {
+        WebpBitmapFactory.sUseSystemDecoder = false;
         GlideApp.with(mContext)
                 //.asBitmap()
                 .load(url)
@@ -112,7 +114,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageHolder>
     }
 
     private void loadImageWithTransformation(ImageView imageView, String url) {
-
+        WebpBitmapFactory.sUseSystemDecoder = false;
         GlideApp.with(mContext)
                 //.asBitmap()
                 .load(url)

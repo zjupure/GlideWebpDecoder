@@ -676,7 +676,7 @@ jobject doDecode(
 //                        features.has_alpha ? "true" : "false",
 //                        features.has_animation ? "true" : "false");
 
-    __android_log_print(ANDROID_LOG_INFO, "GLIDE_WEBP","width:%d, height:%d, scale:%f", image_width, image_height, scale);
+    __android_log_print(ANDROID_LOG_INFO, "GLIDE_WEBP","webp width:%d, height:%d, scale:%f", image_width, image_height, scale);
 
     WebPDecoderConfig config;
     WebPInitDecoderConfig(&config);
@@ -694,6 +694,7 @@ jobject doDecode(
         config.options.scaled_height = image_height;
     }
 
+    __android_log_print(ANDROID_LOG_INFO, "GLIDE_WEBP","bitmap width:%d, height:%d, scale:%f", image_width, image_height, scale);
     bitmap = createBitmap(env, image_width, image_height, bitmapOptions);
     RETURN_NULL_IF_EXCEPTION(env);
 
