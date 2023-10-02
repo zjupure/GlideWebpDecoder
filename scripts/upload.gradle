@@ -225,17 +225,16 @@ afterEvaluate { project ->
 //            exclude '**/R$*.class'
 //            baseName "${JAR_PREFIX}${project.name}${JAR_POSTFIX}"
 //        }
-
-        artifacts {
-           // archives androidLibraryJar
-            archives androidSourcesJar
-            archives androidJavadocsJar
-            // This is unnecessary with a release variant because by default the release variant
-            // includes the release aar in archives. Since we've disabled our release variants and
-            // want to include an aar, we need to manually specify the task that produces the aar
-            // here.
-            archives project.tasks.bundleDebugAar
-        }
+//        artifacts {
+//           // archives androidLibraryJar
+//            archives androidSourcesJar
+//            archives androidJavadocsJar
+//            // This is unnecessary with a release variant because by default the release variant
+//            // includes the release aar in archives. Since we've disabled our release variants and
+//            // want to include an aar, we need to manually specify the task that produces the aar
+//            // here.
+//            archives project.tasks.bundleDebugAar
+//        }
     } else if (project.plugins.hasPlugin('java')) {
         task sourcesJar(type: Jar, dependsOn: classes) {
             classifier = 'sources'
