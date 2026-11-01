@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 
 dependencies {
-
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
     implementation("com.github.bumptech.glide:glide:${GLIDE_VERSION}"){
         exclude group:"com.android.support"
     }
@@ -14,9 +14,9 @@ dependencies {
 
     //implementation project(':framesequence')
 
-    implementation "androidx.fragment:fragment:${ANDROIDX_VERSION}"
-    implementation "androidx.vectordrawable:vectordrawable-animated:${ANDROIDX_VERSION}"
-    implementation "androidx.recyclerview:recyclerview:${ANDROIDX_VERSION}"
+    implementation "androidx.fragment:fragment:1.9.1"
+    implementation "androidx.vectordrawable:vectordrawable-animated:1.2.0"
+    implementation "androidx.recyclerview:recyclerview:1.4.0"
 
     implementation "com.facebook.fresco:fresco:${FRESCO_VERSION}"
     // Support animated GIF. It is needed.
@@ -27,12 +27,14 @@ dependencies {
 }
 
 android {
+    namespace "com.bumptech.glide.samples.webp"
+
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
 
     defaultConfig {
         applicationId 'com.bumptech.glide.samples.webp'
-        minSdkVersion MIN_SDK_VERSION as int
+        minSdkVersion 23 //MIN_SDK_VERSION as int
         targetSdkVersion TARGET_SDK_VERSION as int
 
         versionCode 1
@@ -40,8 +42,9 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
     }
 }
 

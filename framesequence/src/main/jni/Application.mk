@@ -9,6 +9,8 @@ APP_OPTIM := release
 
 APP_STL := c++_static
 
+APP_CPPFLAGS := -std=c++17
+
 # Make sure every shared lib includes a .note.gnu.build-id header
 #APP_LDFLAGS := -Wl,--build-id
 
@@ -21,6 +23,6 @@ APP_STL := c++_static
 
 # This hides all symbols exported from libc++_static
 GLIDE_CPP_CFLAGS := -Wall -Wno-unused-parameter -Wno-unused-variable -Wno-overloaded-virtual
-GLIDE_CPP_LDFLAGS := -Wl,--gc-sections,--exclude-libs,libc++_static.a
+GLIDE_CPP_LDFLAGS := -Wl,--gc-sections
 
 FRAMESEQUENCE_INCLUDE_WEBP := true

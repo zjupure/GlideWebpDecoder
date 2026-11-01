@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:${ANDROID_GRADLE_VERSION}"
+        classpath "com.android.tools.build:gradle:${AGP_VERSION}"
         //classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.1'
     }
 }
@@ -22,8 +22,8 @@ if (JavaVersion.current().isJava8Compatible()) {
 
 subprojects {
     tasks.withType(JavaCompile) {
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
+        sourceCompatibility = 1.8
+        targetCompatibility = 1.8
     }
 }
 

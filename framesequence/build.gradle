@@ -1,15 +1,8 @@
 apply plugin: 'com.android.library'
 
-dependencies {
-    compileOnly "androidx.annotation:annotation:${ANDROIDX_VERSION}"
-    implementation("com.github.bumptech.glide:glide:${GLIDE_VERSION}"){
-        exclude group:"com.android.support"
-    }
-    annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
-    compileOnly "androidx.fragment:fragment:${ANDROIDX_VERSION}"
-}
-
 android {
+    namespace "com.bumptech.glide.integration.framesequence"
+
     ndkVersion "${NDK_VERSION}"
     compileSdkVersion COMPILE_SDK_VERSION as int
     buildToolsVersion BUILD_TOOLS_VERSION as String
@@ -39,9 +32,20 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+        coreLibraryDesugaringEnabled true
     }
+}
+
+dependencies {
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.5'
+    compileOnly "androidx.annotation:annotation:1.10.0"
+    implementation("com.github.bumptech.glide:glide:${GLIDE_VERSION}"){
+        exclude group:"com.android.support"
+    }
+    annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
+    compileOnly "androidx.fragment:fragment:1.9.1"
 }
 
 task copyLibwebp(type: Copy) {

@@ -28,13 +28,13 @@ group = GROUP
 def getReleaseRepositoryUrl() {
     return hasProperty('LOCAL') ? localMavenRepo()
             : hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
-            : 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
+            : 'https://central.sonatype.com/repository/maven-releases/'
 }
 
 def getSnapshotRepositoryUrl() {
     return hasProperty('LOCAL') ? localMavenRepo()
             : hasProperty('SNAPSHOT_REPOSITORY_URL') ? SNAPSHOT_REPOSITORY_URL
-            : 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
+            : 'https://central.sonatype.com/repository/maven-snapshots/'
 }
 
 def getRepositoryUsername() {
@@ -56,9 +56,9 @@ afterEvaluate {
                 version VERSION_NAME
 
                 // Two artifacts, the `aar` and the sources
-                artifact("$buildDir/outputs/aar/${project.getName()}-release.aar")
-                artifact androidSourcesJar
-                artifact androidJavadocsJar
+                afterEvaluate {
+                    from components.release
+                }
 
                 // Self-explanatory metadata for the most part
                 pom {

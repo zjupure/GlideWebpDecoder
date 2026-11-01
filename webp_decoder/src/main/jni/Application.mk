@@ -9,6 +9,8 @@ APP_OPTIM := release
 
 APP_STL := c++_static
 
+APP_CPPFLAGS := -std=c++17
+
 # Make sure every shared lib includes a .note.gnu.build-id header
 #APP_LDFLAGS := -Wl,--build-id
 
@@ -20,4 +22,5 @@ APP_STL := c++_static
 # coming from other stl implementations as well
 
 # This hides all symbols exported from libc++_static
-GLIDE_CPP_LDFLAGS := -Wl,--gc-sections,--exclude-libs,libc++_static.a
+# NDK r27 auto hidden symbols for libc++_static
+GLIDE_CPP_LDFLAGS := -Wl,--gc-sections

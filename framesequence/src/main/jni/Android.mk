@@ -12,9 +12,7 @@ LOCAL_SRC_FILES := \
 	Registry.cpp \
 	Stream.cpp  \
 
-CXX11_FLAGS := -std=c++11
-LOCAL_CFLAGS += $(CXX11_FLAGS)
-#LOCAL_CFLAGS += -DLOG_TAG=\"libglide-webp\"
+
 LOCAL_CFLAGS += -fvisibility=hidden
 LOCAL_CFLAGS += $(GLIDE_CPP_CFLAGS)
 
