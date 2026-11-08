@@ -8,6 +8,7 @@ proguard-project.txt
 **/.gradle
 **/.settings
 **/build
+**/gradle-daemon-jvm.properties
 
 # gh-pages
 doc/**
