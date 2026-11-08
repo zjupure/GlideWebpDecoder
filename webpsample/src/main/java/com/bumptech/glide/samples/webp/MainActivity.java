@@ -23,6 +23,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.Transformation;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -268,7 +269,7 @@ public class MainActivity extends Activity {
 
             String webpUrl = urls[0];
             try {
-                Drawable drawable = GlideApp.with(MainActivity.this)
+                Drawable drawable = Glide.with(MainActivity.this)
                         .load(webpUrl)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
                         .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
