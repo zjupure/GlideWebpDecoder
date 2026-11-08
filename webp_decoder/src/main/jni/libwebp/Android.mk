@@ -1,4 +1,4 @@
-# libwebp version 1.3.2, https://github.com/webmproject/libwebp/tree/master (https://chromium.googlesource.com/webm/libwebp)
+# libwebp version v1.6.0, https://github.com/webmproject/libwebp/tree/master (https://chromium.googlesource.com/webm/libwebp)
 LOCAL_PATH := $(call my-dir)
 
 WEBP_CFLAGS := -Wall -DANDROID -DHAVE_MALLOC_H -DHAVE_PTHREAD -DWEBP_USE_THREAD -DWEBP_FORCE_ALIGNED
@@ -69,6 +69,7 @@ LOCAL_SRC_FILES := \
     src/utils/color_cache_utils.c \
     src/utils/filters_utils.c \
     src/utils/huffman_utils.c \
+    src/utils/palette.c \
     src/utils/quant_levels_dec_utils.c \
     src/utils/random_utils.c \
     src/utils/rescaler_utils.c \
@@ -103,6 +104,7 @@ UNUSED_SRCS := \
     src/dsp/enc_sse2.c \
     src/dsp/enc_sse41.c \
     src/dsp/filters_msa.c \
+    src/dsp/lossless_avx2.c \
     src/dsp/lossless_enc.c \
     src/dsp/lossless_enc_mips32.c \
     src/dsp/lossless_enc_mips_dsp_r2.c \
@@ -110,6 +112,7 @@ UNUSED_SRCS := \
     src/dsp/lossless_enc_neon.$(NEON) \
     src/dsp/lossless_enc_sse2.c \
     src/dsp/lossless_enc_sse41.c \
+    src/dsp/lossless_enc_avx2.c \
     src/dsp/lossless_msa.c \
     src/dsp/rescaler_msa.c \
     src/dsp/upsampling_msa.c \
