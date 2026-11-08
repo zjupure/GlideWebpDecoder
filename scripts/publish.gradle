@@ -28,7 +28,7 @@ group = GROUP
 def getReleaseRepositoryUrl() {
     return hasProperty('LOCAL') ? localMavenRepo()
             : hasProperty('RELEASE_REPOSITORY_URL') ? RELEASE_REPOSITORY_URL
-            : 'https://central.sonatype.com/repository/maven-releases/'
+            : 'https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/'
 }
 
 def getSnapshotRepositoryUrl() {
@@ -83,23 +83,12 @@ afterEvaluate {
                     }
                     // Version control info, if you're using GitHub, follow the format as seen here
                     scm {
-                        //修改成你的Git地址：
-                        connection = POM_SCM_URL
-                        developerConnection = POM_SCM_CONNECTION
-                        //分支地址：
-                        url = POM_SCM_DEV_CONNECTION
-                    }
-                    // A slightly hacky fix so that your POM will include any transitive dependencies
-                    // that your library builds upon
-                    withXml {
-                        def dependenciesNode = asNode().appendNode('dependencies')
-
-                        project.configurations.implementation.allDependencies.each {
-                            def dependencyNode = dependenciesNode.appendNode('dependency')
-                            dependencyNode.appendNode('groupId', it.group)
-                            dependencyNode.appendNode('artifactId', it.name)
-                            dependencyNode.appendNode('version', it.version)
-                        }
+                        //只读访问地址：
+                        connection = POM_SCM_CONNECTION
+                        //开发者读写地址：
+                        developerConnection = POM_SCM_DEV_CONNECTION
+                        //Github地址
+                        url = POM_SCM_URL
                     }
                 }
             }
@@ -131,5 +120,31 @@ afterEvaluate {
     }
     signing {
         sign publishing.publications.release
+    }
+
+    // maven-publish 采用逐个 PUT 文件的 "Maven-like" 上传方式，OSSRH Staging API 兼容服务
+    // 无法感知一次部署何时结束，因此上传完成后必须调用该手动端点，部署才会出现在
+    // Central Publisher Portal（https://central.sonatype.com/publishing）中。
+    // 注意：认证需使用 Central Portal User Token（旧 OSSRH token 会返回 401）。
+    tasks.register("releaseDeploymentToCentralPortal") {
+        description = 'Uploads the staged deployment to the Central Publisher Portal'
+        group = 'publishing'
+        // SNAPSHOT 直接发布到 Portal 快照仓库，不走 staging，无需调用手动上传端点
+        onlyIf { !project.version.toString().endsWith('SNAPSHOT') }
+        dependsOn tasks.named("publishReleasePublicationToMavenCentralRepository")
+        doLast {
+            def portalToken = ("${getRepositoryUsername()}:${getRepositoryPassword()}")
+                    .getBytes('UTF-8').encodeBase64().toString()
+            def uploadUrl = "https://ossrh-staging-api.central.sonatype.com/manual/upload/defaultRepository/${GROUP}"
+            HttpURLConnection conn = (HttpURLConnection) new URL(uploadUrl).openConnection()
+            conn.requestMethod = 'POST'
+            conn.setRequestProperty('Authorization', "Bearer ${portalToken}")
+            int code = conn.responseCode
+            if (code >= 300) {
+                def error = conn.errorStream != null ? conn.errorStream.getText('UTF-8') : ''
+                throw new GradleException("Failed to upload deployment to Central Portal: HTTP ${code} ${error}")
+            }
+            println "Deployment uploaded. Release it at https://central.sonatype.com/publishing"
+        }
     }
 }
