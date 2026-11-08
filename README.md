@@ -15,7 +15,7 @@ GlideWebpDecoder is a [Glide](https://github.com/bumptech/glide) integration lib
 
 Library is available in MavenCentral. If you build with Gradle, just add the following dependencies to your `build.gradle` file.
 Different Glide version is corresponding to different GlideWebpDecoder due to the annotation processor compatibility. The version rule of GlideWebpDecoder is "{major_version}.{glide_version}".
-For example, if you use glide 4.16.0, the corresponding version of GlideWebpDecoder should be 2.7.4.16.0
+For example, if you use glide 4.16.0, the corresponding version of GlideWebpDecoder should be 2.8.5.0.9
 
 Library will only follow the latest three version of Glide. If you use a lower version glide, please clone the project and modify it yourself.
 
@@ -24,6 +24,8 @@ Library will only follow the latest three version of Glide. If you use a lower v
 Since Glide 4.10.0 has migrate to AndroidX, so your project must use AndroidX with Glide 4.10.0+. 
 
 WebpDecoder with AndroidX support starts from version 1.6.{GLIDE_VERSION} and won't support glide version below 4.10.0 anymore.
+
+Glide 5.x has deprecated annotionProcessor and use ksp as instead. GlideApp will not generated anymore.
 
 
 **Attention**
@@ -38,10 +40,10 @@ Changes:
 If your project use old library version below 2.0, you should upgrade the library to the latest 2.0 version.
 
 ```gradle
-def GLIDE_VERSION = "4.16.0"
+def GLIDE_VERSION = "5.0.9"
 // webpdecoder
-implementation "com.github.zjupure:webpdecoder:2.7.${GLIDE_VERSION}"
-// glide 4.10.0+
+implementation "com.github.zjupure:webpdecoder:2.8.${GLIDE_VERSION}"
+// glide 4.10+ and 5.x
 implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
 annotationProcessor "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
 ```
